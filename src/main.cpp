@@ -1,4 +1,4 @@
-#include "...\Lexer.h"
+#include "LexicalAnalizer\Lexer.h"
 
 int main()
 {

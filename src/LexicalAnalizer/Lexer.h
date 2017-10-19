@@ -8,13 +8,14 @@ class Token
 {
 public:
 	Token(int id);
-	int id;
 private:
+	int id;
 };
 
 class Word : Token
 {
 public:
+private:
 	std::string m_data;
 };
 
