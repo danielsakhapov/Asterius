@@ -3,29 +3,6 @@
 using namespace std;
 using namespace asterius;
 
-Token::Token(TokenType id) noexcept
-    : id_(id)
-{
-}
-
-Number::Number(int val) noexcept
-    : Token(TokenType::Int),
-    val_(val)
-{
-}
-
-Word::Word(const string& str, TokenType type)
-    : Token(type),
-    val_(str)
-{
-}
-
-Double::Double(double val) noexcept
-    : Token(TokenType::Double),
-    val_(val)
-{
-}
-
 Lexer::Lexer(const string& filename)
     : reader_(filename),
     line_(1),
@@ -77,6 +54,16 @@ unique_ptr<Token> Lexer::getNextToken()
         //TODO 
         return nullptr;
     }
+}
+
+size_t Lexer::line() const noexcept
+{
+    return line_;
+}
+
+size_t Lexer::character() const noexcept
+{
+    return character_;
 }
 
 void Lexer::getch()

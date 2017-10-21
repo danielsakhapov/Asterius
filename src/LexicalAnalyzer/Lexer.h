@@ -5,44 +5,18 @@
 #include <string>
 #include <fstream>
 #include "BasicStructures.hpp"
+#include "TypeInfo.h"
 
 namespace asterius
 {
-
-class Token
-{
-public:
-    Token(TokenType id) noexcept;
-private:
-    TokenType id_;
-};
-
-class Number : public Token {
-public:
-    explicit Number(int val) noexcept;
-private:
-    int val_;
-};
-
-class Word : public Token {
-public:
-    explicit Word(const std::string& str, TokenType type = TokenType::Id);
-private:
-    std::string val_;
-};
-
-class Double : public Token {
-public:
-    explicit Double(double val) noexcept;
-private:
-    double val_;
-};
 
 class Lexer final
 {
 public:
     explicit Lexer(const std::string& filename);
     std::unique_ptr<Token> getNextToken();
+    size_t line() const noexcept;
+    size_t character() const noexcept;
 private:
     void getch();
     char peek();

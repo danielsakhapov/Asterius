@@ -5,16 +5,6 @@
 namespace asterius
 {
 
-enum class TokenType
-{
-    Int,
-    Double,
-    Id,
-    Eq,
-    Read,
-    Write,
-};
-
 // FUNCTIONS
 
 bool isDigit(char c);
