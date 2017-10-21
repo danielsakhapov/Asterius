@@ -12,9 +12,9 @@ namespace asterius
 class Token
 {
 public:
-	Token(TokenType id) noexcept;
+    Token(TokenType id) noexcept;
 private:
-	TokenType id_;
+    TokenType id_;
 };
 
 class Number : public Token {
@@ -41,14 +41,14 @@ private:
 class Lexer final
 {
 public:
-	explicit Lexer(const std::string& filename);
-	std::unique_ptr<Token> getNextToken();
+    explicit Lexer(const std::string& filename);
+    std::unique_ptr<Token> getNextToken();
 private:
     void getch();
     char peek();
     bool match(char c);
 
-	std::ifstream reader_;
+    std::ifstream reader_;
     size_t line_;
     size_t character_;
 };
