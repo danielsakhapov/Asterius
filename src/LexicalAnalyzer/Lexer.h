@@ -1,7 +1,6 @@
 #ifndef LEXER
 #define LEXER
 
-#include <memory>
 #include <string>
 #include <fstream>
 #include "BasicStructures.hpp"
@@ -14,9 +13,7 @@ class Lexer final
 {
 public:
     explicit Lexer(const std::string& filename);
-    std::unique_ptr<Token> getNextToken();
-    size_t line() const noexcept;
-    size_t character() const noexcept;
+    //Token getNextToken();
 private:
     void getch();
     char peek();
