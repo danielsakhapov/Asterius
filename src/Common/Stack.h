@@ -40,13 +40,11 @@ public:
         return top_ + block_size_;
     }
 
-    void* get(int offset) 
+    void* get(size_t offset) const
     {
-        // returns pointer to element by adding offset to current top
-        // offset can be < 0
-        if (offset >= (int)block_size_ || top_ + offset < 0)
+        if (offset >= size)
             throw out_of_range("Access violation");
-        return buf_ + top_ + offset;
+        return (void*)(buf_ + offset);
     }
 
     void pushFrame()

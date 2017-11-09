@@ -16,29 +16,35 @@ void Program::addCommand(unique_ptr<Command> ptr)
     commands_.emplace_back(std::move(ptr));
 }
 
+void Program::addVariable(Data& data)
+{
+    data.offset_ = stack_.top();
+    stack_.push(data.size_);
+}
+
 void Program::addOperand(Data& data)
 {
-    if (!data.isRef) {
+    if (!data.isRef) { //temp value save in stack
         data.offset_ = stack_.top();
         stack_.push(data.size_);
     }
     operands_.push(data);
 }
 
-void Program::popOperand()
+void Program::popOperand() noexcept
 {
     const Data& data = operands_.top();
-    if (!data.isRef)
+    if (!data.isRef)//temp value free memory
         stack_.pop(data.size_);
     operands_.pop();
 }
 
-Data& Program::topOperand()
+const Data& Program::topOperand() const noexcept
 {
     return operands_.top();
 }
 
-void* Program::getOperand(const Data& data)
+void* Program::getOperand(const Data& data) const noexcept
 {
     return stack_.get(data.offset_);
 }
@@ -64,7 +70,7 @@ void FunctionCommand::apply(Program& program)
     func_(program);
 }
 
-DataCommand::DataCommand(Data& data) noexcept
+DataCommand::DataCommand(const Data& data) noexcept
     : data_(data)
 {
 }
@@ -72,24 +78,6 @@ DataCommand::DataCommand(Data& data) noexcept
 void DataCommand::apply(Program& program)
 {
     program.addOperand(data_);
-    program.topOperand().isRef = true;
-    data_.isRef = true; // rework
-}
-
-IntCommand::IntCommand(int val) noexcept
-    : val_(val)
-{
-}
-
-void IntCommand::apply(Program& program)
-{
-    //test example
-    Data data;
-    data.size_ = 4;
-    data.type_ = DataType::INT;
-    program.addOperand(data);
-    int* ptr = (int*)program.getOperand(data);
-    *ptr = val_;
 }
 
 //OPERATORS
@@ -97,11 +85,11 @@ void IntCommand::apply(Program& program)
 void asterius::plus(Program& program)
 {
     //test example
-    Data data1 = program.topOperand();//group to 1 func
+    const Data& data1 = program.topOperand();
     int* op1 = (int*)program.getOperand(data1);
     program.popOperand();
 
-    Data data2 = program.topOperand();
+    const Data& data2 = program.topOperand();
     int* op2 = (int*)program.getOperand(data2);
     program.popOperand();
 
@@ -131,10 +119,10 @@ void asterius::divide(Program& program)
 void asterius::assign(Program& program)
 {
     //test example
-    Data data2 = program.topOperand();
+    const Data& data2 = program.topOperand();
     int* op2 = (int*)program.getOperand(data2);
     program.popOperand();
-    Data data1 = program.topOperand();
+    const Data& data1 = program.topOperand();
     int* op1 = (int*)program.getOperand(data1);
     program.popOperand();
     *op1 = *op2;
@@ -143,10 +131,19 @@ void asterius::assign(Program& program)
 void asterius::write(Program& program)
 {
     //test example
-    Data data1 = program.topOperand();
+    const Data& data1 = program.topOperand();
     int* op1 = (int*)program.getOperand(data1);
     program.popOperand();
     cout << *op1;
+}
+
+void asterius::read(Program& program)
+{
+    //test example
+    const Data& data1 = program.topOperand();
+    int* op1 = (int*)program.getOperand(data1);
+    program.popOperand();
+    cin >> *op1;
 }
 
 //................

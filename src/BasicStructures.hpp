@@ -8,7 +8,8 @@ enum class DataType
 {
     INT,
     DOBULE,
-    STRING
+    STRING,
+    ARRAY
 };
 
 

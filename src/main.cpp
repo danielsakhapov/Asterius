@@ -12,19 +12,19 @@ Program program;
 
 int main()
 {
-    //Lexer lexer("C:\\Users\\Влад\\Documents\\Visual Studio 2015\\Projects\\Asterius\\src\\Programs\\program1.txt");
-    Data ad;
+    Data ad, bd, cd;
     ad.size_ = 4;
-    program.addCommand(make_unique<DataCommand>(ad));
-    program.addCommand(make_unique<IntCommand>(5));
-    program.addCommand(make_unique<FunctionCommand>(asterius::assign));
-    Data bd;
     bd.size_ = 4;
-    program.addCommand(make_unique<DataCommand>(bd));
-    program.addCommand(make_unique<IntCommand>(10));
-    program.addCommand(make_unique<FunctionCommand>(asterius::assign));
-    Data cd;
     cd.size_ = 4;
+    program.addVariable(ad); ad.isRef = true;
+    program.addVariable(bd); bd.isRef = true;
+    program.addVariable(cd); cd.isRef = true;
+
+    program.addCommand(make_unique<DataCommand>(ad));
+    program.addCommand(make_unique<FunctionCommand>(asterius::read));
+    program.addCommand(make_unique<DataCommand>(bd));
+    program.addCommand(make_unique<FunctionCommand>(asterius::read));
+
     program.addCommand(make_unique<DataCommand>(cd));
     program.addCommand(make_unique<DataCommand>(ad));
     program.addCommand(make_unique<DataCommand>(bd));

@@ -15,10 +15,11 @@ class Program final
 public:
     void execute();
     void addCommand(std::unique_ptr<Command> ptr);
-    void addOperand(Data& data);
-    void popOperand();
-    Data& topOperand();
-    void* getOperand(const Data& data);
+    void addVariable(Data& data);
+    void addOperand(Data& data);//shouldn't be reference?
+    void popOperand() noexcept;
+    const Data& topOperand() const noexcept;
+    void* getOperand(const Data& data) const noexcept;
 private:
     Stack<128000> stack_;
     std::vector<std::unique_ptr<Command> > commands_;
@@ -26,8 +27,7 @@ private:
     size_t next_command_;
 };
 
-//base class for commands 
-//can be inherited for additional state
+
 class Command
 {
 public:
@@ -35,7 +35,7 @@ public:
 };
 
 
-//Example
+//JumpCommand
 class JumpCommand : public Command {
 public:
     JumpCommand(size_t pos) noexcept;
@@ -45,6 +45,7 @@ private:
 };
 
 
+//Hold function
 class FunctionCommand : public Command {
 public:
     typedef void(*funcPtr)(Program& program);
@@ -55,23 +56,14 @@ private:
     funcPtr func_;
 };
 
-
+//Hold variable type and refernce to a variable 
 class DataCommand : public Command {
 public:
-    DataCommand(Data& data) noexcept;
+    DataCommand(const Data& data) noexcept;
     void apply(Program& program) override;
 private:
-    Data& data_;
+    Data data_;
 };
-
-class IntCommand : public Command {
-public:
-    IntCommand(int val) noexcept;
-    void apply(Program& program) override;
-private:
-    int val_;
-};
-
 
 //OPERATORS FOR FUNCTION COMMAND?????
 void plus(Program& program);
@@ -80,6 +72,7 @@ void product(Program& program);
 void divide(Program& program);
 void assign(Program& program);
 void write(Program& program);
+void read(Program& program);
 
 }
 #endif
