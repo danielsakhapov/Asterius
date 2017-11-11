@@ -12,13 +12,18 @@ Program program;
 
 int main()
 {
-    Data ad, bd, cd;
+    Lexer lex("SomeFileName", program);
+    while (!lex.eof()) {
+        Token token = lex.getNextToken();
+    }
+    //test example
+    /*Data ad, bd, cd;
     ad.size_ = 4;
     bd.size_ = 4;
     cd.size_ = 4;
-    program.addVariable(ad); ad.isRef = true;
-    program.addVariable(bd); bd.isRef = true;
-    program.addVariable(cd); cd.isRef = true;
+    program.addVariable(ad); ad.isRef_ = true;
+    program.addVariable(bd); bd.isRef_ = true;
+    program.addVariable(cd); cd.isRef_ = true;
 
     program.addCommand(make_unique<DataCommand>(ad));
     program.addCommand(make_unique<FunctionCommand>(asterius::read));
@@ -32,6 +37,6 @@ int main()
     program.addCommand(make_unique<FunctionCommand>(asterius::assign));
     program.addCommand(make_unique<DataCommand>(cd));
     program.addCommand(make_unique<FunctionCommand>(asterius::write));
-    program.execute();
+    program.execute();*/
     return 0;
 }

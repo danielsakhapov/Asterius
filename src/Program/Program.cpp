@@ -22,9 +22,17 @@ void Program::addVariable(Data& data)
     stack_.push(data.size_);
 }
 
+void Program::addConstant(void* src, Data& data)
+{
+    data.offset_ = constants_.top();
+    constants_.push(data.size_);
+    void* dest = constants_.get(data.offset_);
+    memcpy(dest, src, data.size_);
+}
+
 void Program::addOperand(Data& data)
 {
-    if (!data.isRef) { //temp value save in stack
+    if (!data.isRef_) { //temp value save in stack
         data.offset_ = stack_.top();
         stack_.push(data.size_);
     }
@@ -34,7 +42,7 @@ void Program::addOperand(Data& data)
 void Program::popOperand() noexcept
 {
     const Data& data = operands_.top();
-    if (!data.isRef)//temp value free memory
+    if (!data.isRef_)//temp value free memory
         stack_.pop(data.size_);
     operands_.pop();
 }
@@ -57,6 +65,7 @@ JumpCommand::JumpCommand(size_t pos) noexcept
 void JumpCommand::apply(Program& program)
 {
     cout << "Jumped to position " << label_;
+    program.popOperand();
     //DO SOME JUMP STUFF
 }
 
@@ -103,16 +112,19 @@ void asterius::plus(Program& program)
 
 void asterius::minus(Program& program)
 {
+    program.popOperand();
     //DO SOME STUFF
 }
 
 void asterius::product(Program& program)
 {
+    program.popOperand();
     //DO SOME STUFF
 }
 
 void asterius::divide(Program& program)
 {
+    program.popOperand();
     //DO SOME STUFF
 }
 

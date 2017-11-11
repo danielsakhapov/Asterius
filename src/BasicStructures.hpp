@@ -4,24 +4,6 @@
 namespace asterius
 {
 
-enum class DataType
-{
-    INT,
-    DOBULE,
-    STRING,
-    ARRAY
-};
-
-
-//Think more about this
-struct Data
-{
-    DataType type_;
-    size_t size_;
-    size_t offset_;
-    char isRef = false;
-};
-
 // HELPER FUNCTIONS
 
 bool isDigit(char c);
