@@ -1,6 +1,6 @@
 #ifndef SYNTAX
 #define SYNTAX
-#include "LexicalAnalyzer\Lexer.h"
+#include "LexicalAnalyzer/Lexer.h"
 
 namespace asterius
 {

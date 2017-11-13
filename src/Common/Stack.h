@@ -22,7 +22,7 @@ public:
     {
         //reserve memory for block_size bytes
         if (top_ + block_size_ + block_size >= size)
-            throw bad_alloc();
+            throw std::bad_alloc();
         block_size_ += block_size;
     }
 
@@ -30,7 +30,7 @@ public:
     {
         //free memory for block_size bytes
         if (block_size > block_size_)
-            throw out_of_range("Poped too big block");
+            throw std::out_of_range("Poped too big block");
         block_size_ -= block_size;
     }
 
@@ -43,7 +43,7 @@ public:
     void* get(size_t offset) const
     {
         if (offset >= size)
-            throw out_of_range("Access violation");
+            throw std::out_of_range("Access violation");
         return (void*)(buf_ + offset);
     }
 
@@ -59,7 +59,7 @@ public:
     {
         //pop current frame
         block_size_ = block_sizes_.top();
-        top_ -= block_size;
+        top_ -= block_size_;
         block_sizes_.pop();
     }
 

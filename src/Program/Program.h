@@ -1,7 +1,7 @@
 #ifndef PROGRAM
 #define PROGRAM
-#include "Common\Stack.h"
-#include "LexicalAnalyzer\TypeInfo.h"
+#include "Common/Stack.h"
+#include "LexicalAnalyzer/TypeInfo.h"
 #include <memory>
 #include <vector>
 

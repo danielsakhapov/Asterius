@@ -10,7 +10,6 @@
 *.sln.docstates
 
 build/
-.vscode/
 
 # Build results
 [Dd]ebug/

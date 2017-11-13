@@ -7,7 +7,7 @@
 #include <sstream>
 #include "TypeInfo.h"
 #include "SymbolTable.h"
-#include "Program\Program.h"
+#include "Program/Program.h"
 #include "BasicStructures.hpp"
 
 namespace asterius

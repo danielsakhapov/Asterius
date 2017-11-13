@@ -1,9 +1,9 @@
 #include <fstream>
 #include <iostream>
-#include "LexicalAnalyzer\Lexer.h"
-#include "SyntaxAnalyzer\Syntax.h"
-#include "Common\Stack.h"
-#include "Program\Program.h"
+#include "LexicalAnalyzer/Lexer.h"
+#include "SyntaxAnalyzer/Syntax.h"
+#include "Common/Stack.h"
+#include "Program/Program.h"
 
 using namespace std;
 using namespace asterius;
@@ -12,12 +12,13 @@ Program program;
 
 int main()
 {
-    Lexer lex("SomeFileName", program);
+    Lexer lex("bin/program1.txt", program);
     while (!lex.eof()) {
         Token token = lex.getNextToken();
+        cout << token.getName();
     }
     //test example
-    /*Data ad, bd, cd;
+    Data ad, bd, cd;
     ad.size_ = 4;
     bd.size_ = 4;
     cd.size_ = 4;
@@ -37,6 +38,6 @@ int main()
     program.addCommand(make_unique<FunctionCommand>(asterius::assign));
     program.addCommand(make_unique<DataCommand>(cd));
     program.addCommand(make_unique<FunctionCommand>(asterius::write));
-    program.execute();*/
+    program.execute();
     return 0;
 }
