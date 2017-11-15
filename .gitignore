@@ -55,9 +55,6 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
-*.sln
-*.vcxproj
-*.vcxproj.filters
 
 # Visual C++ cache files
 ipch/
