@@ -51,10 +51,13 @@ dlldata.c
 *.log
 *.vspscc
 *.vssscc
-.builds
+*.builds
 *.pidb
 *.svclog
 *.scc
+*.sln
+*.vcxproj
+*.vcxproj.filters
 
 # Visual C++ cache files
 ipch/
@@ -91,7 +94,6 @@ ClientBin/
 *.jfm
 *.pfx
 *.publishsettings
-orleans.codegen.cs
 
 # SQL Server files
 *.mdf
