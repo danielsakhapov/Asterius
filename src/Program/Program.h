@@ -1,9 +1,11 @@
 #ifndef PROGRAM
 #define PROGRAM
-#include "Common/Stack.h"
-#include "LexicalAnalyzer/TypeInfo.h"
+
 #include <memory>
 #include <vector>
+
+#include "Common/Stack.h"
+#include "LexicalAnalyzer/TypeInfo.h"
 
 namespace asterius 
 {
@@ -16,14 +18,13 @@ public:
     void execute();
     void addCommand(std::unique_ptr<Command> ptr);
     void addVariable(Data& data);
-    void addConstant(void* src, Data& data);
-    void addOperand(Data& data);//shouldn't be reference?
+    void addConstant(Data& data, void* src);
+	void addOperand(Data& data, void* src);
+    void addOperand(Data& data);
     void popOperand() noexcept;
-    const Data& topOperand() const noexcept;
-    void* getOperand(const Data& data) const noexcept;//?
+	const Data& topOperand() const noexcept;
 private:
     Stack<128000> stack_;
-    Stack<10000> constants_;
     std::vector<std::unique_ptr<Command> > commands_;
     std::stack<Data> operands_;
     size_t next_command_;

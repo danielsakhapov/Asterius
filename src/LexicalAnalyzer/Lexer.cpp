@@ -119,7 +119,7 @@ Token Lexer::readNumber()
     }
     if (peek() != '.') {// integer
         Data data(DataType::INT, INT_SIZE, line_, character_, true);
-        program_.addConstant(&num, data);
+        program_.addConstant(data, &num);
         return Token(TokenType::CONST, data);
     }
     getch(); // double
@@ -131,7 +131,7 @@ Token Lexer::readNumber()
         tail /= 10;
     }
     Data data(DataType::FLOAT, FLOAT_SIZE, line_, character_, true);
-    program_.addConstant(&flt, data);
+    program_.addConstant(data, &flt);
     return Token(TokenType::CONST, data);
 }
 

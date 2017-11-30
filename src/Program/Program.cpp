@@ -18,23 +18,26 @@ void Program::addCommand(unique_ptr<Command> ptr)
 
 void Program::addVariable(Data& data)
 {
-    data.offset_ = stack_.top();
-    stack_.push(data.size_);
+    stack_.push(data);
 }
 
-void Program::addConstant(void* src, Data& data)
+void Program::addConstant(Data& data, void* src)
 {
-    data.offset_ = constants_.top();
-    constants_.push(data.size_);
-    void* dest = constants_.get(data.offset_);
-    memcpy(dest, src, data.size_);
+	stack_.push(data, src);
+}
+
+void Program::addOperand(Data& data, void* src)
+{
+	if (!data.isRef_) { //temp value save in stack
+		stack_.push(data, src);
+	}
+	operands_.push(data);
 }
 
 void Program::addOperand(Data& data)
 {
     if (!data.isRef_) { //temp value save in stack
-        data.offset_ = stack_.top();
-        stack_.push(data.size_);
+        stack_.push(data);
     }
     operands_.push(data);
 }
@@ -43,18 +46,13 @@ void Program::popOperand() noexcept
 {
     const Data& data = operands_.top();
     if (!data.isRef_)//temp value free memory
-        stack_.pop(data.size_);
+        stack_.pop(data);
     operands_.pop();
 }
 
 const Data& Program::topOperand() const noexcept
 {
     return operands_.top();
-}
-
-void* Program::getOperand(const Data& data) const noexcept
-{
-    return stack_.get(data.offset_);
 }
 
 JumpCommand::JumpCommand(size_t pos) noexcept
@@ -95,19 +93,18 @@ void asterius::plus(Program& program)
 {
     //test example
     const Data& data1 = program.topOperand();
-    int* op1 = (int*)program.getOperand(data1);
+    int* op1 = (int*)data1.data_;
     program.popOperand();
 
     const Data& data2 = program.topOperand();
-    int* op2 = (int*)program.getOperand(data2);
+    int* op2 = (int*)data2.data_;
     program.popOperand();
 
     Data res_data;
     res_data.size_ = 4;
     res_data.type_ = DataType::INT;
-    program.addOperand(res_data);
-    int* res = (int*)program.getOperand(res_data);
-    *res = *op1 + *op2;
+    int res = *op1 + *op2;
+    program.addOperand(res_data, &res);
 }
 
 void asterius::minus(Program& program)
@@ -132,10 +129,10 @@ void asterius::assign(Program& program)
 {
     //test example
     const Data& data2 = program.topOperand();
-    int* op2 = (int*)program.getOperand(data2);
+    int* op2 = (int*)data2.data_;
     program.popOperand();
     const Data& data1 = program.topOperand();
-    int* op1 = (int*)program.getOperand(data1);
+    int* op1 = (int*)data1.data_;
     program.popOperand();
     *op1 = *op2;
 }
@@ -143,19 +140,19 @@ void asterius::assign(Program& program)
 void asterius::write(Program& program)
 {
     //test example
-    const Data& data1 = program.topOperand();
-    int* op1 = (int*)program.getOperand(data1);
+    const Data& data = program.topOperand();
+    int* op = (int*)data.data_;
     program.popOperand();
-    cout << *op1;
+    cout << *op;
 }
 
 void asterius::read(Program& program)
 {
     //test example
-    const Data& data1 = program.topOperand();
-    int* op1 = (int*)program.getOperand(data1);
+    const Data& data = program.topOperand();
+    int* op = (int*)data.data_;
     program.popOperand();
-    cin >> *op1;
+    cin >> *op;
 }
 
 //................

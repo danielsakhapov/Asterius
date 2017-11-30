@@ -1,5 +1,6 @@
 #ifndef TYPE_INFO
 #define TYPE_INFO
+
 #include <string>
 
 namespace asterius
@@ -54,7 +55,7 @@ struct Data
     Data(DataType type, size_t size, size_t line, size_t chr, char isRef = false) noexcept;
     DataType type_;
     char isRef_;
-    size_t offset_;
+    void* data_;
     size_t size_;
     size_t line_;
     size_t char_;

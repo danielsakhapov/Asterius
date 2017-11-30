@@ -12,11 +12,11 @@ Program program;
 
 int main()
 {
-    Lexer lex("bin/program1.txt", program);
+    /*Lexer lex("bin/program1.txt", program);
     while (!lex.eof()) {
         Token token = lex.getNextToken();
         cout << token.getName();
-    }
+    }*/
     //test example
     Data ad, bd, cd;
     ad.size_ = 4;

@@ -5,6 +5,8 @@
 #include <cstring>
 #include <exception>
 
+#include "LexicalAnalyzer/TypeInfo.h"
+
 namespace asterius
 {
 
@@ -12,61 +14,59 @@ template<size_t size>
 class Stack {
 public:
     Stack()
-        : top_(0),
-        block_size_(0)
+        : top_(0)
     {
+		block_ends_.push(0);
         memset(buf_, 0, sizeof(buf_));
     }
 
-    void push(size_t block_size)
+	void push(Data& data, void* src)
+	{
+		//reserve memory and fill from src
+		this->push(data);
+		memcpy(data.data_, src, sizeof(data.size_));
+	}
+
+    void push(Data& data)
     {
         //reserve memory for block_size bytes
-        if (top_ + block_size_ + block_size >= size)
+        if (top_ + data.size_ >= size)
             throw std::bad_alloc();
-        block_size_ += block_size;
+		data.data_ = this->top();
+		top_ += data.size_;
     }
 
-    void pop(size_t block_size)
+    void pop(const Data& data)
     {
         //free memory for block_size bytes
-        if (block_size > block_size_)
+        if (block_ends_.empty() || top_ - data.size_ < block_ends_.top())
             throw std::out_of_range("Poped too big block");
-        block_size_ -= block_size;
-    }
-
-    size_t top() const noexcept
-    {
-        //returns offset to the begining of new element 
-        return top_ + block_size_;
-    }
-
-    void* get(size_t offset) const
-    {
-        if (offset >= size)
-            throw std::out_of_range("Access violation");
-        return (void*)(buf_ + offset);
+		top_ -= data.size_;
     }
 
     void pushFrame()
     {
         //saves current frame
-        top_ += block_size_;
-        block_sizes_.push(block_size_);
-        block_size_ = 0;
+		block_ends_.push(top_);
     }
+
+	void* top() const noexcept
+	{
+		return (void*)(buf_ + top_);
+	}
 
     void popFrame()
     {
         //pop current frame
-        block_size_ = block_sizes_.top();
-        top_ -= block_size_;
-        block_sizes_.pop();
+		if (block_sizes_.empty())
+			throw std::logic_error("pop from empty stack");
+        top_ = block_ends_.top();
+		block_ends_.pop();
     }
 
 private:
-    size_t top_; //begining of current stack frame
-    size_t block_size_; //size of current stack frame
-    std::stack<size_t> block_sizes_; // stores previous block sizes
+    size_t top_;
+    std::stack<size_t> block_ends_;
     char buf_[size];
 };
 
