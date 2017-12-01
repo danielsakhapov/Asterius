@@ -1,4 +1,5 @@
 #include "Lexer.h"
+#include <functional>
 
 using namespace std;
 using namespace asterius;
@@ -48,7 +49,8 @@ Token Lexer::getNextToken()
 	for (state_ = State::START; state_ != State::FINISH;) {
 		size_t col = getCol(peek());
 		func fn = sem[(size_t)state_][col];
-		invoke(fn, this);
+		(this->*fn)();
+//		invoke(fn, this);
 		getch();
 		state_ = tr[(size_t)state_][col];
 	}

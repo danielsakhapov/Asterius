@@ -58,7 +58,7 @@ public:
     void popFrame()
     {
         //pop current frame
-		if (block_sizes_.empty())
+		if (block_ends_.empty())
 			throw std::logic_error("pop from empty stack");
         top_ = block_ends_.top();
 		block_ends_.pop();
