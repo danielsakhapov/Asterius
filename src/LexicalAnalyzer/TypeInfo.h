@@ -65,6 +65,7 @@ struct Data
 class Token
 {
 public:
+
     Token(TokenType id, Data data = Data(), std::string&& name = std::string());
     const std::string& getName() const noexcept;
 
