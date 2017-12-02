@@ -23,15 +23,15 @@ void Program::addVariable(Data& data)
 
 void Program::addConstant(Data& data, void* src)
 {
-	stack_.push(data, src);
+    stack_.push(data, src);
 }
 
 void Program::addOperand(Data& data, void* src)
 {
-	if (!data.isRef_) { //temp value save in stack
-		stack_.push(data, src);
-	}
-	operands_.push(data);
+    if (!data.isRef_) { //temp value save in stack
+        stack_.push(data, src);
+    }
+    operands_.push(data);
 }
 
 void Program::addOperand(Data& data)

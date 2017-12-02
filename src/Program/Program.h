@@ -19,10 +19,10 @@ public:
     void addCommand(std::unique_ptr<Command> ptr);
     void addVariable(Data& data);
     void addConstant(Data& data, void* src);
-	void addOperand(Data& data, void* src);
+    void addOperand(Data& data, void* src);
     void addOperand(Data& data);
     void popOperand() noexcept;
-	const Data& topOperand() const noexcept;
+    const Data& topOperand() const noexcept;
 private:
     Stack<128000> stack_;
     std::vector<std::unique_ptr<Command> > commands_;

@@ -1,5 +1,6 @@
 int a;
 int b;
 read(a); read(b);
-int c = a + b;
+int c set a + b;
 write(c);
+c set 10+20;

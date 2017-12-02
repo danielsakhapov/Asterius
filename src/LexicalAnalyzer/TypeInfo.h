@@ -25,7 +25,8 @@ enum class TokenType
     WHILE,
     IF,
     INT,
-    FLOAT,
+    DOUBLE,
+    STRING,
     AND,
     OR,
     EQ,
@@ -44,9 +45,14 @@ enum class TokenType
     FALSE,
     READ,
     WRITE,
+    OPEN_FIGURE,
+    CLOSE_FIGURE,
+    OPEN_SQUARE,
+    CLOSE_SQUARE,
     OPEN_BRACKET,
     CLOSE_BRACKET,
-    NONE
+    COMMA,
+    NONE,
 };
 
 struct Data
@@ -65,8 +71,8 @@ struct Data
 class Token
 {
 public:
-
-    Token(TokenType id, Data data = Data(), std::string&& name = std::string());
+    Token(TokenType id = TokenType::NONE, std::string&& name = std::string(), Data data = Data());
+    Token(TokenType id, const std::string& name, Data data = Data());
     const std::string& getName() const noexcept;
 
     static Token none;

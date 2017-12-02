@@ -17,12 +17,19 @@ Data::Data(DataType type, size_t size, size_t line, size_t chr, char isRef) noex
 {
 }
 
-Token Token::none{TokenType::NONE};
+Token Token::none;
 
-Token::Token(TokenType id, Data data, std::string&& name)
+Token::Token(TokenType id, std::string&& name, Data data)
     : id_(id),
-    data_(data),
-    name_(std::move(name))
+    name_(std::move(name)),
+    data_(data)
+{
+}
+
+Token::Token(TokenType id, const std::string& name, Data data)
+    : id_(id),
+    name_(name),
+    data_(data)
 {
 }
 
