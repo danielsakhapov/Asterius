@@ -55,7 +55,6 @@ private:
     void sem22();
     void sem23();
     void sem24();
-    void sem25();
 
     void err1();
     void err2();

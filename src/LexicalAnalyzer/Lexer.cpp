@@ -36,7 +36,7 @@ vector<vector<Lexer::State> > Lexer::tr = {
 
     /*3*/{ State::FINISH, State::INTEGER, State::FINISH, State::FINISH, State::FINISH, State::FINISH, //6
     State::FINISH,  State::FINISH, State::FINISH, State::FINISH, State::FINISH, State::FINISH, //12
-    State::DOUBLE, State::FINISH, State::FINISH, State::FINISH, State::FINISH, State::FINISH, State::FINISH },
+    State::FINISH, State::FINISH, State::DOUBLE, State::FINISH, State::FINISH, State::FINISH, State::FINISH },
 
     /*4*/{ State::FINISH, State::DOUBLE, State::FINISH, State::FINISH, State::FINISH, State::FINISH, //6
     State::FINISH,  State::FINISH, State::FINISH, State::FINISH, State::FINISH, State::FINISH, //12
@@ -48,7 +48,7 @@ vector<vector<Lexer::State> > Lexer::tr = {
 
     /*6*/{ State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, //6
     State::COMMENT,  State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, //12
-    State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, State::START, State::COMMENT, State::COMMENT },
+    State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, State::COMMENT, State::START, State::COMMENT },
 
     /*7*/{ State::STRING, State::STRING, State::STRING, State::STRING, State::STRING, State::STRING, //6
     State::STRING,  State::STRING, State::STRING, State::STRING, State::STRING, State::STRING, //12
@@ -63,7 +63,7 @@ Lexer::Lexer(const string& filename, Program& program)
     sem {
         /*1*/{ &Lexer::sem1, &Lexer::sem2, &Lexer::sem3, &Lexer::sem4, &Lexer::sem5, &Lexer::sem0, //6
         &Lexer::sem6, &Lexer::sem7, &Lexer::sem8, &Lexer::sem9, &Lexer::sem10, &Lexer::sem11, //12
-        &Lexer::sem12, &Lexer::sem13, &Lexer::sem14, &Lexer::sem15, &Lexer::sem0, &Lexer::sem25, &Lexer::err1 },
+        &Lexer::sem12, &Lexer::sem13, &Lexer::sem14, &Lexer::sem15, &Lexer::sem0, &Lexer::sem0, &Lexer::err1 },
 
         /*2*/{ &Lexer::sem16, &Lexer::sem16, &Lexer::sem17, &Lexer::sem17, &Lexer::sem17, &Lexer::sem17, //6
         &Lexer::err1, &Lexer::err1, &Lexer::sem17, &Lexer::sem17, &Lexer::sem17, &Lexer::sem17, //12
@@ -112,12 +112,18 @@ bool Lexer::eof()
 
 void Lexer::stepBack()
 {
+    --character_;
     reader_.seekg(reader_.tellg() - streamoff(1));
 }
 
 void Lexer::getch()
 {
-    ++character_;
+    if (peek() == '\n') {
+        ++line_;
+        character_ = 1;
+    }
+    else
+        ++character_;
     reader_.get();
 }
 
@@ -166,9 +172,9 @@ size_t Lexer::getCol(char c)
         return 12;
     case ';':
         return 13;
-    case ':':
-        return 14;
     case '.':
+        return 14;
+    case ',':
         return 15;
     case ' ':
         return 16;
@@ -252,6 +258,7 @@ void Lexer::sem13()
 void Lexer::sem14()
 {
     double_ = 0;
+    pow_ = 1;
 }
 
 void Lexer::sem15()
@@ -314,36 +321,30 @@ void Lexer::sem24()
     token_ = Token(TokenType::STRING, name_);
 }
 
-void Lexer::sem25()
-{
-    ++line_;
-    character_ = 1;
-}
-
 void Lexer::err1()
 {
-    stringstream ss("unexpected token at: ");
-    ss << line_ << ':' << character_ << " symbol:" << peek();
+    stringstream ss;
+    ss << "unexpected token at: " << line_ << ':' << character_ << " symbol:" << peek();
     throw logic_error(ss.str());
 }
 
 void Lexer::err2()
 {
-    stringstream ss("name starts with number at: ");
-    ss << line_ << ':' << character_;
+    stringstream ss;
+    ss << "name starts with number at: " << line_ << ':' << character_;
     throw logic_error(ss.str());
 }
 
 void Lexer::err3()
 {
-    stringstream ss("already has dot at: ");
-    ss << line_ << ':' << character_;
+    stringstream ss;
+    ss << "already has dot at: " << line_ << ':' << character_;
     throw logic_error(ss.str());
 }
 
 void Lexer::err4()
 {
-    stringstream ss("^ expected: ");
-    ss << line_ << ':' << character_;
+    stringstream ss;
+    ss << "^ expected at: " << line_ << ':' << character_;
     throw logic_error(ss.str());
 }

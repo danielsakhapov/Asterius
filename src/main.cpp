@@ -12,10 +12,15 @@ Program program;
 
 int main()
 {
-    Lexer lex("C:/Users/Влад/Documents/Visual Studio 2015/Projects/Asterius/src/Examples/program1.txt", program);
+    Lexer lex("src/Examples/program1.txt", program);
     while (!lex.eof()) {
-        Token token = lex.getNextToken();
-        cout << token.getName();
+        try {
+            Token token = lex.getNextToken();
+            cout << token.getName() << " ";
+        }
+        catch (const exception& ex) {
+            cerr << ex.what() << " ";
+        }
     }
     //test example
     /*Data ad, bd, cd;

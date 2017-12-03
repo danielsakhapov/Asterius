@@ -1,6 +1,7 @@
-int a;
+c set 01.0.//+1.1;
+^daniil kotik;
+int 0a;
 int b;
 read(a); read(b);
-int c set a + b;
+int c set a /+ b;
 write(c);
-c set 10+20;
