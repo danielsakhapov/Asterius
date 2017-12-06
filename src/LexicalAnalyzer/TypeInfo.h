@@ -15,7 +15,8 @@ enum class DataType
     CHAR,
     INT,
     FLOAT,
-    ARRAY
+    ARRAY,
+    FUNCTION
 };
 
 enum class TokenType

@@ -142,8 +142,10 @@
                     "sources": [
                       "src/main.cpp",
                       "src/Common/BasicStructures.cpp",
+                      "src/SyntaxAnalyzer/RPN.cpp",
+                      "src/SyntaxAnalyzer/RPNStructures.cpp",
                       "src/SyntaxAnalyzer/Syntax.cpp",
-                      "src/SyntaxAnalyzer/SyntaxStructure.cpp",
+                      "src/SyntaxAnalyzer/SyntaxStructures.cpp",
                       "src/LexicalAnalyzer/Lexer.cpp",
                       "src/LexicalAnalyzer/SymbolTable.cpp",
                       "src/LexicalAnalyzer/TypeInfo.cpp"
@@ -162,7 +164,7 @@
         ]
       }
     ],
-    "cookie": "0.9204103434771913",
+    "cookie": "0.9408736442474561",
     "inReplyTo": "codemodel",
     "type": "reply"
   }
