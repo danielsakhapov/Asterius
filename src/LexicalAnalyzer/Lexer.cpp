@@ -55,11 +55,10 @@ vector<vector<Lexer::State> > Lexer::tr = {
     State::FINISH, State::STRING, State::STRING, State::STRING, State::STRING, State::FINISH, State::STRING }
 };
 
-Lexer::Lexer(const string& filename, Program& program)
+Lexer::Lexer(const string& filename)
     : reader_(filename),
     line_(1),
     character_(1),
-    program_(program),
     sem {
         /*1*/{ &Lexer::sem1, &Lexer::sem2, &Lexer::sem3, &Lexer::sem4, &Lexer::sem5, &Lexer::sem0, //6
         &Lexer::sem6, &Lexer::sem7, &Lexer::sem8, &Lexer::sem9, &Lexer::sem10, &Lexer::sem11, //12

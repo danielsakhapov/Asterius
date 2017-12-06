@@ -7,5 +7,146 @@
     "description": "Emit debug information without performing optimizations"
   },
   "activeEnvironments": [],
-  "codeModel": null
+  "codeModel": {
+    "configurations": [
+      {
+        "name": "Debug",
+        "projects": [
+          {
+            "buildDirectory": "/home/daniel/Projects/university/Asterius/build",
+            "name": "Asterius",
+            "sourceDirectory": "/home/daniel/Projects/university/Asterius",
+            "targets": [
+              {
+                "artifacts": [
+                  "/home/daniel/Projects/university/Asterius/bin/Asterius"
+                ],
+                "buildDirectory": "/home/daniel/Projects/university/Asterius/build",
+                "crossReferences": {
+                  "backtrace": [
+                    {
+                      "line": 23,
+                      "name": "add_executable",
+                      "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                    },
+                    {
+                      "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                    }
+                  ],
+                  "relatedStatements": [
+                    {
+                      "backtrace": [
+                        {
+                          "line": 9,
+                          "name": "include_directories",
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 10,
+                          "name": "include_directories",
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 11,
+                          "name": "include_directories",
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 12,
+                          "name": "include_directories",
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 13,
+                          "name": "include_directories",
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    }
+                  ]
+                },
+                "fileGroups": [
+                  {
+                    "compileFlags": "-g   -std=c++1z",
+                    "includePath": [
+                      {
+                        "path": "/home/daniel/Projects/university/Asterius/src"
+                      },
+                      {
+                        "path": "/home/daniel/Projects/university/Asterius/src/Common"
+                      },
+                      {
+                        "path": "/home/daniel/Projects/university/Asterius/src/Examples"
+                      },
+                      {
+                        "path": "/home/daniel/Projects/university/Asterius/src/SyntaxAnalyzer"
+                      },
+                      {
+                        "path": "/home/daniel/Projects/university/Asterius/src/LexicalAnalyzer"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "src/main.cpp",
+                      "src/Common/BasicStructures.cpp",
+                      "src/SyntaxAnalyzer/Syntax.cpp",
+                      "src/LexicalAnalyzer/Lexer.cpp",
+                      "src/LexicalAnalyzer/SymbolTable.cpp",
+                      "src/LexicalAnalyzer/TypeInfo.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "Asterius",
+                "linkLanguageFlags": "-g",
+                "linkerLanguage": "CXX",
+                "name": "Asterius",
+                "sourceDirectory": "/home/daniel/Projects/university/Asterius",
+                "type": "EXECUTABLE"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cookie": "0.22397386644426898",
+    "inReplyTo": "codemodel",
+    "type": "reply"
+  }
 }

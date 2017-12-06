@@ -7,8 +7,7 @@
 #include <sstream>
 #include "TypeInfo.h"
 #include "SymbolTable.h"
-#include "Program/Program.h"
-#include "BasicStructures.hpp"
+#include "BasicStructures.h"
 
 namespace asterius
 {
@@ -17,7 +16,7 @@ class Lexer final
 {
 public:
     typedef void(Lexer::*func)();
-    explicit Lexer(const std::string& filename, Program& program);
+    explicit Lexer(const std::string& filename);
     Token getNextToken();
     bool eof();
 private:
@@ -65,7 +64,6 @@ private:
     std::ifstream reader_;
     size_t line_;
     size_t character_;
-    Program& program_;
 
     //temp variables
     static std::map<std::string, TokenType> keywords_;

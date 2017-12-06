@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.5)
 
 project(Asterius)
 
@@ -8,14 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(src)
 include_directories(src/Common)
-include_directories(src/Program)
 include_directories(src/Examples)
-include_directories(src/SyntaxAnalizer)
-include_directories(src/LexicalAnalizer)
+include_directories(src/SyntaxAnalyzer)
+include_directories(src/LexicalAnalyzer)
 
 aux_source_directory(src SOURCES)
 aux_source_directory(src/Common SOURCES)
-aux_source_directory(src/Program SOURCES)
 aux_source_directory(src/Examples SOURCES)
 aux_source_directory(src/SyntaxAnalyzer SOURCES)
 aux_source_directory(src/LexicalAnalyzer SOURCES)
