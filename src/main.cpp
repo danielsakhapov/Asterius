@@ -8,16 +8,9 @@ using namespace asterius;
 
 int main()
 {
-	Lexer lex("src/Examples/program1.txt");
-	while (!lex.eof()) {
-		try {
-			Token token = lex.getNextToken();
-			cout << token.getName() << " ";
-		}
-		catch (const exception& ex) {
-			cerr << ex.what() << " ";
-		}
-	}
+	Lexer lexer("src/Examples/program1.txt");
+	Parser parser(std::move(lexer));
+	parser.generate();
 
 	return 0;
 }

@@ -22,6 +22,9 @@ enum class TokenType
 {
     CONST,
     ID,
+    LET,
+    BE,
+    FN,
     WHILE,
     IF,
     INT,
@@ -74,6 +77,7 @@ public:
     Token(TokenType id = TokenType::NONE, std::string&& name = std::string(), Data data = Data());
     Token(TokenType id, const std::string& name, Data data = Data());
     const std::string& getName() const noexcept;
+    TokenType getType() const noexcept;
 
     static Token none;
 private:

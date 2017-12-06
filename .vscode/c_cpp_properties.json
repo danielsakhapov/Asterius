@@ -39,7 +39,6 @@
                 "${workspaceRoot}/src/Common",
                 "${workspaceRoot}/src/Examples",
                 "${workspaceRoot}/src/LexicalAnalyzer",
-                "${workspaceRoot}/src/Programm",
                 "${workspaceRoot}/src/SyntaxAnalyzer"
             ],
             "defines": [],

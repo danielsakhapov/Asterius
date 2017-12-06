@@ -1,7 +1,1 @@
-int c set 1.0 //+1.1;
-^daniil kotik;
-int 0a;
-int b;
-read(a); read(b);
-int c set a //+ b;
-write(c);
+let c be int 10;

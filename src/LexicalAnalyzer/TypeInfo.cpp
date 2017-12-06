@@ -38,6 +38,11 @@ const string& Token::getName() const noexcept
     return name_;
 }
 
+TokenType Token::getType() const noexcept
+{
+    return id_;
+}
+
 bool asterius::operator<(const Token& lhs, const Token& rhs)
 {
     return lhs.name_ < rhs.name_;

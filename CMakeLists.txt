@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+add_definitions(-DSYNTAX_DEBUG)
+
 include_directories(src)
 include_directories(src/Common)
 include_directories(src/Examples)
