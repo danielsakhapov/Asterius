@@ -7,26 +7,19 @@ Parser::Parser(Lexer&& lexer)
 	: lexer_(std::move(lexer))
 {
 	stack_.push(ElementType::FUNC);
-	table_.insert( 
-		std::make_pair( 
-			ElementType::FUNC,
-			std::vector<TransitionRule>{
+	table_.emplace(ElementType::FUNC,
+			std::move(std::vector<TransitionRule>{
 				TransitionRule( ElementType::FN, { ElementType::SUB_FUNC } ),
 				TransitionRule( ElementType::LET, { ElementType::NAME, ElementType::BE } )
-			}
-		)		
+			})
 	);
-	table_.insert( 
-		std::make_pair( 
-			ElementType::SUB_FUNC, 
-			std::vector<TransitionRule>{
-				TransitionRule( ElementType::NAME, {  } ),
-			}
-		)		
+	table_.emplace( 
+		ElementType::SUB_FUNC, 
+		std::move(std::vector<TransitionRule>{
+			TransitionRule( ElementType::NAME, {  } ),
+		})
 	);
 }
-
-
 
 void Parser::generate()
 {
@@ -45,17 +38,15 @@ void Parser::generate()
 	}
 }
 
-
-
 void Parser::transit(const Token& token)
 {
-	if ( !isTerminal(stack_.top()) ) {
+	if (!isTerminal(stack_.top())) {
 		try {
-			auto rules = table_.at( stack_.top() );
-			for (auto it: rules) {
+			const auto& rules = table_.at(stack_.top());
+			for (const auto& it: rules) {
 				if (it.term_ == tokenToElement(token)) {
 					stack_.pop();
-					for (auto it2: it.vec_) {
+					for (const auto& it2: it.vec_) {
 						stack_.push(it2);
 					}
 					break;
@@ -71,7 +62,6 @@ void Parser::transit(const Token& token)
 }
 
 
-
 ElementType Parser::tokenToElement(const Token& token) const noexcept
 {
 	if (token.getType() == TokenType::FN)
@@ -82,13 +72,9 @@ ElementType Parser::tokenToElement(const Token& token) const noexcept
 }
 
 
-
 bool Parser::isTerminal(const ElementType& element) const noexcept
 {
-	if (element == ElementType::NAME)
-		return true;
-
-	return false;
+	return element == ElementType::NAME;
 }
 
 }

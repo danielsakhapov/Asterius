@@ -1,7 +1,7 @@
 #ifndef RPN_STRUCTURES
 #define RPN_STRUCTURES
 
-#include "TypeInfo.h"
+#include "LexicalAnalyzer/TypeInfo.h"
 
 namespace asterius
 {

@@ -13,8 +13,8 @@ namespace asterius
 class RPN
 {
 public:
-	RPN(std::map<std::string, Variable>&, std::map<std::string, Variable>&, const std::vector<Command>&);
-	void addCommand(const Command&);
+	RPN(const std::map<std::string, Variable>& globalVars, const std::map<std::string, Variable>& localVars, const std::vector<Command>& commands);
+	void addCommand(const Command& command);
 	Variable execute();
 private:
 	std::vector<Command> commands_;

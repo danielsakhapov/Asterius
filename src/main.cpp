@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
-#include "Lexer.h"
-#include "Syntax.h"
+#include "LexicalAnalyzer/Lexer.h"
+#include "SyntaxAnalyzer/Syntax.h"
 
 using namespace std;
 using namespace asterius;

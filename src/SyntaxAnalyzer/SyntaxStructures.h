@@ -1,7 +1,7 @@
 #ifndef SYNTAX_STRUCTURES
 #define SYNTAX_STRUCTURES
 
-#include "Lexer.h"
+#include "LexicalAnalyzer/Lexer.h"
 
 namespace asterius
 {

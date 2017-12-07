@@ -5,9 +5,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "TypeInfo.h"
-#include "SymbolTable.h"
-#include "BasicStructures.h"
+#include "LexicalAnalyzer/TypeInfo.h"
+#include "LexicalAnalyzer/SymbolTable.h"
+#include "Common/BasicStructures.h"
 
 namespace asterius
 {

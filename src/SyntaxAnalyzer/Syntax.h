@@ -7,7 +7,7 @@
 #include <utility>
 #include <iostream>
 
-#include "Lexer.h"
+#include "LexicalAnalyzer/Lexer.h"
 #include "SyntaxStructures.h"
 
 namespace asterius
@@ -22,7 +22,7 @@ public:
 	void transit(const Token&);
 	ElementType tokenToElement(const Token&) const noexcept;
 private:
-	std::map<ElementType, std::vector<TransitionRule>> table_;
+	std::map<ElementType, std::vector<TransitionRule> > table_;
 	Lexer lexer_;
 	std::stack<ElementType> stack_;
 };
