@@ -4,7 +4,14 @@ namespace asterius
 {
 
 Parser::Parser(Lexer&& lexer)
-	: lexer_(std::move(lexer))
+	: lexer_(std::move(lexer)),
+    table_ {
+        {ElementType::FUNC,{ //example
+                TransitionRule(ElementType::FN,{ ElementType::SUB_FUNC }),
+                TransitionRule(ElementType::LET,{ ElementType::NAME, ElementType::BE })
+            } 
+        }
+    }
 {
 	stack_.push(ElementType::FUNC);
 	table_.emplace(ElementType::FUNC,
