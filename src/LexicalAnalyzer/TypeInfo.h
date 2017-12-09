@@ -21,8 +21,19 @@ enum class DataType
 
 enum class TokenType
 {
+    LEQ,
+    GEQ,
+    GREATER,
+    LESS,
+    ELSE,
+    MAIN,
+    OF,
+    ARRAY,
+    BY,
+    NOT,
     CONST,
     ID,
+    BYTE,
     LET,
     BE,
     FN,

@@ -9,19 +9,23 @@ namespace asterius
 enum class CommandType
 {
 	INT,
-	INT1,
+	FN,
 	VAR,
 	ADD,
 	SUB,
 	MULT,
 	DIV,
-	ASSIGN
+	ASSIGN,
+	DOUBLE,
+	BLOCK_END,
+	INT_CONST,
+	BLOCK_BEGIN
 };
 
 struct Command
 {
 	CommandType type_;
-	void* data;
+	void* data_;
 };
 
 struct Variable

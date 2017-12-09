@@ -7,8 +7,10 @@
 #include <utility>
 #include <iostream>
 
-#include "LexicalAnalyzer/Lexer.h"
+#include "RPN.h"
+#include "RPNStructures.h"
 #include "SyntaxStructures.h"
+#include "LexicalAnalyzer/Lexer.h"
 
 namespace asterius
 {
@@ -17,14 +19,14 @@ class Parser final
 {
 public:
 	Parser(Lexer&& lexer);
-	void generate();
+	RPN generate();
 	bool isTerminal(const ElementType&) const noexcept;
 	void transit(const Token&);
 	ElementType tokenToElement(const Token&) const noexcept;
 private:
-	std::map<ElementType, std::vector<TransitionRule> > table_;
 	Lexer lexer_;
 	std::stack<ElementType> stack_;
+	std::map<ElementType, std::vector<TransitionRule> > table_;
 };
 
 }

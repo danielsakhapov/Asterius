@@ -16,13 +16,31 @@ enum class Lexer::State {
 
 map<string, TokenType> Lexer::keywords_ = 
 {
+    { "not", TokenType::NOT },
+    { "let", TokenType::LET },
+    { "be", TokenType::BE },
+    { "by", TokenType::BY },
+    { "fn", TokenType::FN },
+    { "set", TokenType::ASSIGN },
+    { "array", TokenType::ARRAY },
+    { "of", TokenType::OF },
+    { "or", TokenType::OR },
+    { "and", TokenType::AND },
+    { "main", TokenType::MAIN },
     { "while", TokenType::WHILE },
-    { "if",    TokenType::IF },
-    { "int",   TokenType::INT },
-    { "double", TokenType::DOUBLE },
     { "read",  TokenType::READ },
     { "write", TokenType::WRITE },
-    { "set", TokenType::ASSIGN }
+    { "if",    TokenType::IF },
+    { "else", TokenType::ELSE },
+    { "less", TokenType::LESS },
+    { "greater", TokenType::GREATER },
+    { "eq", TokenType::EQ },
+    { "neq", TokenType::NEQ },
+    { "geq", TokenType::GEQ },
+    { "leq", TokenType::LEQ },
+    { "int",   TokenType::INT },
+    { "byte",   TokenType::BYTE },
+    { "double", TokenType::DOUBLE },
 };
 
 vector<vector<Lexer::State> > Lexer::tr = {
