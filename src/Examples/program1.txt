@@ -3,10 +3,10 @@ let b be int 20;
 
 fn f()
 {
-	write(a + b);
+    write(a + b);
 }
 
 fn main()
 {
-	f();
+    f();
 }

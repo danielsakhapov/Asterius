@@ -25,7 +25,7 @@ private:
     void stepBack();
     void getch();
     char peek();
-    TokenType findKeyword(const std::string& name) const noexcept;
+    TokenType getTokenType(const std::string& name) const noexcept;
     size_t getCol(char c);
 
     //sem functions

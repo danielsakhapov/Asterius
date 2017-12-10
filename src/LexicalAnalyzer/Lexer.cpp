@@ -149,12 +149,12 @@ char Lexer::peek()
     return (char)reader_.peek();
 }
 
-TokenType Lexer::findKeyword(const string& name) const noexcept
+TokenType Lexer::getTokenType(const string& name) const noexcept
 {
     auto it = keywords_.find(name);
     if (it != keywords_.end())
         return it->second;
-    return TokenType::NONE;
+    return TokenType::ID; // suppose user name by default
 }
 
 size_t Lexer::getCol(char c)
@@ -207,13 +207,13 @@ void Lexer::sem0()
 }
 
 void Lexer::sem1()
-{
+{   //read first letter
     name_.clear();
     name_.push_back(peek());
 }
 
 void Lexer::sem2()
-{
+{   //read first digit
     integer_ = charToInt(peek());
 }
 
@@ -263,7 +263,7 @@ void Lexer::sem11()
 }
 
 void Lexer::sem12()
-{
+{   //begining of const string;
     name_.clear();
 }
 
@@ -273,7 +273,7 @@ void Lexer::sem13()
 }
 
 void Lexer::sem14()
-{
+{   //read dot .123 is allowed
     double_ = 0;
     pow_ = 1;
 }
@@ -285,46 +285,47 @@ void Lexer::sem15()
 
 void Lexer::sem16()
 {
+    //read another char
     name_ += peek();
 }
 
 void Lexer::sem17()
 {
-    stepBack();
-    auto it = keywords_.find(name_);
-    if (it == keywords_.end())
-        token_ = Token(TokenType::ID, name_);
-    else
-        token_ = Token(it->second, name_);
+    //finished reading word
+    stepBack(); //Met next symbol step back for cases like smth+smth
+    token_ = Token(getTokenType(name_), name_);
 }
 
 void Lexer::sem18()
-{
+{   //read another digit of integer
     integer_ *= 10;
     integer_ += charToInt(peek());
 }
 
 void Lexer::sem19()
-{
-    stepBack();
+{   //finished reading integer
+    stepBack(); //Met next symbol step back for cases like smth+smth
     token_ = Token(TokenType::INT, to_string(integer_));
 }
 
 void Lexer::sem20()
 {
+    //Met dot after integer
     double_ = integer_;
     pow_ = 1;
 }
 
 void Lexer::sem21()
 {
+    //another digit of float
     pow_ /= 10;
     double_ += pow_ * charToInt(peek());
 }
 
 void Lexer::sem22()
 {
-    stepBack();
+
+    stepBack(); //Met next symbol step back for cases like smth+smth
     token_ = Token(TokenType::DOUBLE, to_string(double_));
 }
 
@@ -334,7 +335,7 @@ void Lexer::sem23()
 }
 
 void Lexer::sem24()
-{
+{   //end of const string
     token_ = Token(TokenType::STRING, name_);
 }
 
