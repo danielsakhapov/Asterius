@@ -14,33 +14,34 @@ enum class Lexer::State {
     FINISH
 };
 
-map<string, TokenType> Lexer::keywords_ = 
+map<string, ElementType> Lexer::keywords_ = 
 {
-    { "not", TokenType::NOT },
-    { "let", TokenType::LET },
-    { "be", TokenType::BE },
-    { "by", TokenType::BY },
-    { "fn", TokenType::FN },
-    { "set", TokenType::ASSIGN },
-    { "array", TokenType::ARRAY },
-    { "of", TokenType::OF },
-    { "or", TokenType::OR },
-    { "and", TokenType::AND },
-    { "main", TokenType::MAIN },
-    { "while", TokenType::WHILE },
-    { "read",  TokenType::READ },
-    { "write", TokenType::WRITE },
-    { "if",    TokenType::IF },
-    { "else", TokenType::ELSE },
-    { "less", TokenType::LESS },
-    { "greater", TokenType::GREATER },
-    { "eq", TokenType::EQ },
-    { "neq", TokenType::NEQ },
-    { "geq", TokenType::GEQ },
-    { "leq", TokenType::LEQ },
-    { "int",   TokenType::INT },
-    { "byte",   TokenType::BYTE },
-    { "double", TokenType::DOUBLE },
+    { "not", ElementType::NOT },
+    { "let", ElementType::LET },
+    { "be", ElementType::BE },
+    { "by", ElementType::BY },
+    { "fn", ElementType::FN },
+    { "set", ElementType::ASSIGN },
+    { "array", ElementType::ARRAY },
+    { "of", ElementType::OF },
+    { "or", ElementType::OR },
+    { "and", ElementType::AND },
+    { "main", ElementType::MAIN },
+    { "while", ElementType::WHILE },
+    { "read",  ElementType::READ },
+    { "write", ElementType::WRITE },
+    { "if",    ElementType::IF },
+    { "else", ElementType::ELSE },
+    { "less", ElementType::LESS },
+    { "greater", ElementType::GREATER },
+    { "eq", ElementType::EQ },
+    { "neq", ElementType::NEQ },
+    { "geq", ElementType::GEQ },
+    { "leq", ElementType::LEQ },
+    { "int",   ElementType::INT },
+    { "byte",   ElementType::BYTE },
+    { "double", ElementType::DOUBLE },
+    { "string", ElementType::STRING },
 };
 
 vector<vector<Lexer::State> > Lexer::tr = {
@@ -149,12 +150,12 @@ char Lexer::peek()
     return (char)reader_.peek();
 }
 
-TokenType Lexer::getTokenType(const string& name) const noexcept
+ElementType Lexer::getElementType(const string& name) const noexcept
 {
     auto it = keywords_.find(name);
     if (it != keywords_.end())
         return it->second;
-    return TokenType::ID; // suppose user name by default
+    return ElementType::NAME; // suppose user name by default
 }
 
 size_t Lexer::getCol(char c)
@@ -219,47 +220,47 @@ void Lexer::sem2()
 
 void Lexer::sem3()
 {
-    token_ = Token(TokenType::PLUS, "+");
+    token_ = Token(ElementType::PLUS, "+");
 }
 
 void Lexer::sem4()
 {
-    token_ = Token(TokenType::MINUS, "-");
+    token_ = Token(ElementType::MINUS, "-");
 }
 
 void Lexer::sem5()
 {
-    token_ = Token(TokenType::PRODUCT, "*");
+    token_ = Token(ElementType::PRODUCT, "*");
 }
 
 void Lexer::sem6()
 {
-    token_ = Token(TokenType::OPEN_FIGURE, "{");
+    token_ = Token(ElementType::OPEN_FIGURE, "{");
 }
 
 void Lexer::sem7()
 {
-    token_ = Token(TokenType::CLOSE_FIGURE, "}");
+    token_ = Token(ElementType::CLOSE_FIGURE, "}");
 }
 
 void Lexer::sem8()
 {
-    token_ = Token(TokenType::OPEN_BRACKET, "(");
+    token_ = Token(ElementType::OPEN_BRACKET, "(");
 }
 
 void Lexer::sem9()
 {
-    token_ = Token(TokenType::CLOSE_BRACKET, ")");
+    token_ = Token(ElementType::CLOSE_BRACKET, ")");
 }
 
 void Lexer::sem10()
 {
-    token_ = Token(TokenType::OPEN_SQUARE, "[");
+    token_ = Token(ElementType::OPEN_SQUARE, "[");
 }
 
 void Lexer::sem11()
 {
-    token_ = Token(TokenType::CLOSE_SQUARE, "]");
+    token_ = Token(ElementType::CLOSE_SQUARE, "]");
 }
 
 void Lexer::sem12()
@@ -269,7 +270,7 @@ void Lexer::sem12()
 
 void Lexer::sem13()
 {
-    token_ = Token(TokenType::STATEMENT_END, ";");
+    token_ = Token(ElementType::STATEMENT_END, ";");
 }
 
 void Lexer::sem14()
@@ -280,7 +281,7 @@ void Lexer::sem14()
 
 void Lexer::sem15()
 {
-    token_ = Token(TokenType::COMMA, ",");
+    token_ = Token(ElementType::COMMA, ",");
 }
 
 void Lexer::sem16()
@@ -293,7 +294,7 @@ void Lexer::sem17()
 {
     //finished reading word
     stepBack(); //Met next symbol step back for cases like smth+smth
-    token_ = Token(getTokenType(name_), name_);
+    token_ = Token(getElementType(name_), name_);
 }
 
 void Lexer::sem18()
@@ -305,7 +306,7 @@ void Lexer::sem18()
 void Lexer::sem19()
 {   //finished reading integer
     stepBack(); //Met next symbol step back for cases like smth+smth
-    token_ = Token(TokenType::INT, to_string(integer_));
+    token_ = Token(ElementType::INT_CONST, to_string(integer_));
 }
 
 void Lexer::sem20()
@@ -326,17 +327,17 @@ void Lexer::sem22()
 {
 
     stepBack(); //Met next symbol step back for cases like smth+smth
-    token_ = Token(TokenType::DOUBLE, to_string(double_));
+    token_ = Token(ElementType::DOUBLE_CONST, to_string(double_));
 }
 
 void Lexer::sem23()
 {
-    token_ = Token(TokenType::DIVISION, "/");
+    token_ = Token(ElementType::DIVISION, "/");
 }
 
 void Lexer::sem24()
 {   //end of const string
-    token_ = Token(TokenType::STRING, name_);
+    token_ = Token(ElementType::STRING_CONST, name_);
 }
 
 void Lexer::err1()

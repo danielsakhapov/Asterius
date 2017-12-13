@@ -19,14 +19,14 @@ Data::Data(DataType type, size_t size, size_t line, size_t chr, char isRef) noex
 
 Token Token::none;
 
-Token::Token(TokenType id, std::string&& name, Data data)
+Token::Token(ElementType id, std::string&& name, Data data)
     : id_(id),
     name_(std::move(name)),
     data_(data)
 {
 }
 
-Token::Token(TokenType id, const std::string& name, Data data)
+Token::Token(ElementType id, const std::string& name, Data data)
     : id_(id),
     name_(name),
     data_(data)
@@ -38,7 +38,7 @@ const string& Token::getName() const noexcept
     return name_;
 }
 
-TokenType Token::getType() const noexcept
+ElementType Token::getType() const noexcept
 {
     return id_;
 }

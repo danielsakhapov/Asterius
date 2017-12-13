@@ -19,42 +19,79 @@ enum class DataType
     FUNCTION
 };
 
-enum class TokenType
+#define INDEX_OF_FIRST_TERMINAL 34
+
+enum class ElementType
 {
-    LEQ,
-    GEQ,
-    GREATER,
-    LESS,
-    ELSE,
+    // NonTerminals
+	START,	
+	NEXT_PARAM,	
+	FUNC,
+	SUB_FUNC,
+	ARGS,
+	BLOCK,
+	TYPE_DESC,
+	ZARR,
+	NEXT_ARG,
+	TYPE,
+	STATEMENT,
+	EXPR,
+	DESC,
+	INDEX,
+	PARAM,
+	MULT_EXPR,
+	ADD_EXPR,
+	COMP_EXPR,
+	AND_EXPR,
+	OR_EXPR,
+	NEG,	
+	LEXPR,
+	OR_TERM,
+	AND_FACTOR,
+	LCOMP_EXPR,
+	TERM,
+	FACTOR,
+	Z,
+	TYPEDEF,
+	VALUE,
+    ELSEST,
+    EMPTY,
+	FINISH,
+    ASS,
+    // Terminals
     MAIN,
+    LET,
+	BE,
+	BY,
+	FN,
     OF,
     ARRAY,
-    BY,
-    NOT,
-    CONST,
-    ID,
-    BYTE,
-    LET,
-    BE,
-    FN,
+    INT,
+	DOUBLE,
+	BYTE,
+    STRING,
+    INT_CONST,
+	DOUBLE_CONST,
+	BYTE_CONST,
+    STRING_CONST,
+    NAME,
     WHILE,
     IF,
-    INT,
-    DOUBLE,
-    STRING,
-    AND,
-    OR,
-    EQ,
-    NEQ,
-    LT,
-    GT,
-    LE,
-    GE,
+    ELSE,
     ASSIGN,
     PLUS,
     MINUS,
     PRODUCT,
     DIVISION,
+    OR,
+    AND,
+    NOT,
+    LESS,
+    GREATER,
+    EQ,
+    LEQ,
+    GEQ,
+    NEQ,
     STATEMENT_END, //;
     TRUE,
     FALSE,
@@ -86,14 +123,14 @@ struct Data
 class Token
 {
 public:
-    Token(TokenType id = TokenType::NONE, std::string&& name = std::string(), Data data = Data());
-    Token(TokenType id, const std::string& name, Data data = Data());
+    Token(ElementType id = ElementType::NONE, std::string&& name = std::string(), Data data = Data());
+    Token(ElementType id, const std::string& name, Data data = Data());
     const std::string& getName() const noexcept;
-    TokenType getType() const noexcept;
+    ElementType getType() const noexcept;
 
     static Token none;
 private:
-    TokenType id_;
+    ElementType id_;
     std::string name_;
     Data data_;
     friend bool operator<(const Token& lhs, const Token& rhs);

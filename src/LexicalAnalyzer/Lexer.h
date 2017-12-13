@@ -25,7 +25,7 @@ private:
     void stepBack();
     void getch();
     char peek();
-    TokenType getTokenType(const std::string& name) const noexcept;
+    ElementType getElementType(const std::string& name) const noexcept;
     size_t getCol(char c);
 
     //sem functions
@@ -66,7 +66,7 @@ private:
     size_t character_;
 
     //temp variables
-    static std::map<std::string, TokenType> keywords_;
+    static std::map<std::string, ElementType> keywords_;
     std::string name_;
     size_t integer_;
     double double_;

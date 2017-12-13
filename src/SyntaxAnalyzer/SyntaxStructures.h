@@ -1,98 +1,20 @@
 #ifndef SYNTAX_STRUCTURES
 #define SYNTAX_STRUCTURES
 
-#include "LexicalAnalyzer/Lexer.h"
+#include <vector>
+
+#include "RPNStructures.h"
 
 namespace asterius
 {
 
-enum class ElementType
-{
-	OPEN_FBRACKET,
-	CLOSE_FBRACKET,
-	START,
-	NAME,
-	NOT,
-	LET,
-	BE,
-	BY,
-	FN,
-	INT,
-	DOUBLE,
-	BYTE,
-	SET,
-	OPEN_IBRACKET,
-	NEXT_PARAM,
-	CLOSE_IBRACKET,
-	STRING,
-	ARRAY,
-	INT_CONST,
-	DOUBLE_CONST,
-	BYTE_CONST,
-	FUNC,
-	SUB_FUNC,
-	ARGS,
-	BLOCK,
-	TYPE_DESC,
-	MINUS,
-	PLUS,
-	STAR,
-	SLASH,
-	ZARR,
-	NEXT_ARG,
-	TYPE,
-	STATEMENT,
-	EXPR,
-	DESC,
-	INDEX,
-	PARAM,
-	MULT_EXPR,
-	ADD_EXPR,
-	COMP_EXPR,
-	AND_EXPR,
-	OR_EXPR,
-	NEG,
-	OF,
-	LEXPR,
-	OR_TERM,
-	AND_FACTOR,
-	LCOMP_EXPR,
-	TERM,
-	FACTOR,
-	Z,
-	TYPEDEF,
-	VALUE,
-	OR,
-	AND,
-	EMPTY,
-	FINISH,
-	SEPARATOR,
-	OPEN_BRACKET,
-	CLOSE_BRACKET,
-	MAIN,
-	COMMA,
-	STRING_CONST,
-	WHILE,
-	READ,
-	WRITE,
-	IF,
-	ELSE,
-	ELSEST,
-	LESS,
-	GREATER, 
-	EQ, 
-	NEQ,
-	GEQ,
-	LEQ
-};
-
 struct TransitionRule
 {
-	TransitionRule(ElementType&&, std::vector<ElementType>&&);
-	ElementType term_;
-	std::vector<ElementType> vec_;
+	TransitionRule(std::vector<ElementType>&&, std::vector<Action>&&);
+	std::vector<ElementType> elements_;
+	std::vector<Action> acts_;
 };
 
 }
 
-#endif // SYNTAX_STRUCTURES
+#endif

@@ -1,12 +1,12 @@
 #ifndef RPN_STRUCTURES
 #define RPN_STRUCTURES
 
-#include "LexicalAnalyzer/TypeInfo.h"
+#include "TypeInfo.h"
 
 namespace asterius
 {
 
-enum class CommandType
+enum class ActionType
 {
 	INT,
 	FN,
@@ -15,6 +15,7 @@ enum class CommandType
 	SUB,
 	MULT,
 	DIV,
+	EMPTY,
 	ASSIGN,
 	DOUBLE,
 	BLOCK_END,
@@ -22,9 +23,9 @@ enum class CommandType
 	BLOCK_BEGIN
 };
 
-struct Command
+struct Action
 {
-	CommandType type_;
+	ActionType type_;
 	void* data_;
 };
 
@@ -33,6 +34,11 @@ struct Variable
 	Variable(DataType, void*);
 	DataType type_;
 	void* data_;
+};
+
+class Command
+{
+
 };
 
 }
