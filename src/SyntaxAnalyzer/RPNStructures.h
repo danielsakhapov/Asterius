@@ -9,12 +9,15 @@ namespace asterius
 enum class ActionType
 {
 	INT,
+	BYTE,
+	STRING,
 	FN,
 	VAR,
 	ADD,
 	SUB,
 	MULT,
 	DIV,
+	INDEX,
 	EMPTY,
 	ASSIGN,
 	DOUBLE,

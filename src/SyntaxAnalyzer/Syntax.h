@@ -20,9 +20,10 @@ public:
 	RPN generate();
 private:
 	Lexer lexer_;
-	std::stack<ElementType> elementStack_;
-	std::stack<ElementType> generatorStack_;
-	std::map<ElementType, std::vector<std::vector<ElementType>>> table_;
+	std::stack<Action> actionsStack_;
+	std::stack<std::string> nameStack_;
+	std::stack<ElementType> elementsStack_;
+	std::map<ElementType, std::vector<TransitionRule>> table_;
 
 	void transit(const Token& token);
 	bool isTerminal(const Token& token);

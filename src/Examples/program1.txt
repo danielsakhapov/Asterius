@@ -1,3 +1,10 @@
+let a be int 10;
+let b be int 20;
+
+fn f()
+{
+    write(a + b);
+}
 
 fn main()
 {
