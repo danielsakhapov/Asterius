@@ -1,8 +1,7 @@
-let a be int 10;
-let b be int 20;
-
 fn f()
 {
+    let a be int 10;
+    let b be int 20;
     write(a + b);
 }
 

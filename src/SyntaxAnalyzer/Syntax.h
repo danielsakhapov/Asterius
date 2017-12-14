@@ -28,7 +28,7 @@ private:
 	void transit(const Token& token);
 	bool isTerminal(const Token& token);
 	template <typename E>
-	constexpr auto toUnderlying(E e) noexcept;
+	constexpr auto toUnderlying(E e) const noexcept;
 };
 
 }

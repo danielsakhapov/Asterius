@@ -4,7 +4,7 @@ namespace asterius
 {
 
 template <typename E>
-constexpr auto Parser::toUnderlying(E e) noexcept
+constexpr auto Parser::toUnderlying(E e) const noexcept
 {
     return static_cast<std::underlying_type_t<E>>(e);
 }
@@ -682,7 +682,7 @@ RPN Parser::generate()
 		}
 		catch (const std::exception& ex) {
 			std::cerr << ex.what() << " ";
-			break;
+			throw;
 		}
 	}
 }
