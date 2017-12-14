@@ -4,6 +4,7 @@
 #include <map>
 #include <stack>
 #include <vector>
+#include <string>
 #include <utility>
 #include <iostream>
 
@@ -17,12 +18,15 @@ class Parser final
 {
 public:
 	Parser(Lexer&& lexer);
-	RPN generate();
+	RPN analyze();
+	void generate(RPN& rpn, const Token&);
 private:
 	Lexer lexer_;
-	std::stack<Action> actionsStack_;
-	std::stack<std::string> nameStack_;
+	std::stack<std::size_t> labelsStack_;
+	std::stack<ActionType> actionsStack_;
 	std::stack<ElementType> elementsStack_;
+	std::stack<std::vector<std::string>> locals_;
+	std::map<std::string, std::stack<std::size_t>> vars_;
 	std::map<ElementType, std::vector<TransitionRule>> table_;
 
 	void transit(const Token& token);

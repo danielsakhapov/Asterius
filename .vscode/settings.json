@@ -16,6 +16,8 @@
 		"iosfwd": "cpp",
 		"stdexcept": "cpp",
 		"system_error": "cpp",
-		"fstream": "cpp"
+		"fstream": "cpp",
+		"iostream": "cpp",
+		"utility": "cpp"
 	}
 }

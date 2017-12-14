@@ -1,8 +1,17 @@
 fn f()
 {
+    if (a greater b) {
+        write(a);
+    }
+    else {
+        write(b);
+    }
     let a be int 10;
     let b be int 20;
-    write(a + b);
+    while (a less b) {
+        write(a + b);
+        a set a - 1;
+    }
 }
 
 fn main()

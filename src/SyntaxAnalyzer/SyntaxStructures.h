@@ -10,9 +10,9 @@ namespace asterius
 
 struct TransitionRule
 {
-	TransitionRule(std::vector<ElementType>&&, std::vector<Action>&&);
+	TransitionRule(std::vector<ElementType>&&, std::vector<ActionType>&&);
 	std::vector<ElementType> elements_;
-	std::vector<Action> acts_;
+	std::vector<ActionType> acts_;
 };
 
 }

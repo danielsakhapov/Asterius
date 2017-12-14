@@ -10,7 +10,7 @@ int main()
 {
 	Lexer lexer("src/Examples/program1.txt");
 	Parser parser(std::move(lexer));
-	parser.generate();
+	RPN mainRpn = parser.analyze();
 
 	return 0;
 }
