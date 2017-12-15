@@ -12,10 +12,12 @@ namespace asterius
 class SymbolTableNode 
 {
 public:
-    const Token& insert(const Token& token);
-    const Token& find(const std::string& name) const noexcept;
+    SymbolTableNode() noexcept;
+    void insert(const std::string& name, Data& data);
+    const Data* find(const std::string& name) const noexcept;
 private:
-    std::map<std::string, Token> tokens_; //c++17 string_view
+    std::map<std::string, Data> table_;
+    size_t block_size_;
 };
 
 
@@ -24,8 +26,8 @@ class SymbolTable {
 public:
     void push();
     void pop();
-    const Token& find(const std::string& token) const noexcept;
-    const Token& insert(const Token& token);
+    const Data* find(const std::string& name) const noexcept;
+    void insert(const std::string& name, Data& data);
 private:
     std::vector<SymbolTableNode> tables_;
 };

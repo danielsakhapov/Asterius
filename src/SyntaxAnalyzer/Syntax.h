@@ -30,7 +30,7 @@ private:
 	std::map<ElementType, std::vector<TransitionRule>> table_;
 
 	void transit(const Token& token);
-	bool isTerminal(const Token& token);
+	bool isTerminal(ElementType elementType) const noexcept;
 	template <typename E>
 	constexpr auto toUnderlying(E e) const noexcept;
 };

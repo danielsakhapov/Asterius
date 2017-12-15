@@ -145,9 +145,9 @@ void Parser::transit(const Token& token)
 
 
 
-bool Parser::isTerminal(const Token& token)
+bool Parser::isTerminal(ElementType elementType) const noexcept
 {
-	return toUnderlying(token.getType()) >= INDEX_OF_FIRST_TERMINAL; // l00kz l1ke maGGG1ck
+	return toUnderlying(elementType) >= INDEX_OF_FIRST_TERMINAL; // l00kz l1ke maGGG1ck
 }
 
 

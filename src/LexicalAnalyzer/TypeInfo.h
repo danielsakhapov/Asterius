@@ -9,17 +9,16 @@ namespace asterius
 #define CHAR_SIZE 1
 #define INT_SIZE 4
 #define FLOAT_SIZE 8
+#define INDEX_OF_FIRST_TERMINAL 34
 
 enum class DataType
 {
-    CHAR,
+    BYTE,
     INT,
     FLOAT,
     ARRAY,
     FUNCTION
 };
-
-#define INDEX_OF_FIRST_TERMINAL 34
 
 enum class ElementType
 {
@@ -104,35 +103,53 @@ enum class ElementType
     OPEN_BRACKET,
     CLOSE_BRACKET,
     COMMA,
-    NONE,
+    NONE
 };
 
-struct Data
+class Position
 {
-    Data() noexcept;
-    Data(DataType type, size_t size, size_t line, size_t chr, char isRef = false) noexcept;
-    DataType type_;
-    char isRef_;
-    void* data_;
-    size_t size_;
+public:
+    Position() noexcept;
+    void newLine() noexcept;
+    void operator++() noexcept;
+    void operator--() noexcept;
+    size_t line() const noexcept;
+    size_t character() const noexcept;
+private:
     size_t line_;
     size_t char_;
 };
 
+std::string to_string(const Position& position);
+
+class Data
+{
+public:
+    Data(DataType type, size_t size, const Position& position) noexcept;
+
+    size_t size() const noexcept;
+    const Position& position() const noexcept;
+    void setOffset(size_t offset) noexcept;
+private:
+    DataType type_; 
+    size_t offset_; //offset in stack
+    size_t size_; //can be carried through global table
+    Position position_; //position in source file
+};
 
 class Token
 {
 public:
-    Token(ElementType id = ElementType::NONE, std::string&& name = std::string(), Data data = Data());
-    Token(ElementType id, const std::string& name, Data data = Data());
+    Token();
+    Token(ElementType id, const Position& position, std::string&& name);
+    Token(ElementType id, const Position& position, const std::string& name = std::string());
     const std::string& getName() const noexcept;
     ElementType getType() const noexcept;
-
-    static Token none;
+    const Position& getPosition() const noexcept;
 private:
     ElementType id_;
     std::string name_;
-    Data data_;
+    Position position_;
     friend bool operator<(const Token& lhs, const Token& rhs);
 };
 

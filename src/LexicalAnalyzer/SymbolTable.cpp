@@ -1,19 +1,33 @@
+#include <sstream>
+#include <exception>
 #include "SymbolTable.h"
 
 using namespace std;
 using namespace asterius;
 
-const Token& SymbolTableNode::insert(const Token& token)
+SymbolTableNode::SymbolTableNode() noexcept
+    : block_size_(0)
 {
-    return (tokens_.emplace(token.getName(), token).first)->second; // token
 }
 
-const Token& SymbolTableNode::find(const string& name) const noexcept
+void SymbolTableNode::insert(const string& name, Data& data)
 {
-    auto it = tokens_.find(name);
-    if (it == tokens_.end())
-        return Token::none;
-    return it->second;
+    auto pr = table_.emplace(name, data);
+    if (!pr.second)  {
+        stringstream ss;
+        ss << "name: " << name << " was already defined at: " << to_string(data.position());
+        throw logic_error(ss.str());
+    }
+    data.setOffset(block_size_);
+    block_size_ += data.size();
+}
+
+const Data* SymbolTableNode::find(const string& name) const noexcept
+{
+    auto it = table_.find(name);
+    if (it != table_.end())
+        return &(it->second);
+    return nullptr;
 }
 
 void SymbolTable::push()
@@ -26,17 +40,17 @@ void SymbolTable::pop()
     tables_.pop_back();
 }
 
-const Token& SymbolTable::find(const string& name) const noexcept
+const Data* SymbolTable::find(const string& name) const noexcept
 {
     for (auto it = tables_.crbegin(); it != tables_.crend(); ++it) {
-        const auto& token = it->find(name);
-        if (&token != &Token::none)
-            return token;
+        const auto& dataPtr = it->find(name);
+        if (dataPtr)
+            return dataPtr;
     }
-    return Token::none;
+    return nullptr;
 }
 
-const Token& SymbolTable::insert(const Token& token)
+void SymbolTable::insert(const string& name, Data& data)
 {
-    return tables_.back().insert(token);
+    return tables_.back().insert(name, data);
 }

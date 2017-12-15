@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include "LexicalAnalyzer/TypeInfo.h"
@@ -62,11 +63,9 @@ private:
 
     //Private data
     std::ifstream reader_;
-    size_t line_;
-    size_t character_;
+    Position position_;
 
-    //temp variables
-    static std::map<std::string, ElementType> keywords_;
+    //temp variables used to save state between sem functions
     std::string name_;
     size_t integer_;
     double double_;
@@ -76,6 +75,7 @@ private:
     //tables
     static std::vector<std::vector<State> > tr;
     std::vector<std::vector<func> > sem; // 8 20
+    static std::map<std::string, ElementType> keywords_;
 };
 
 }
