@@ -11,7 +11,7 @@ constexpr auto Parser::toUnderlying(E e) const noexcept
 
 RPN Parser::analyze()
 {
-	RPN rpn({}, {});
+	RPN rpn;
 	Token token = lexer_.getNextToken();
 	while (!lexer_.eof()) {
 		try {			
@@ -80,39 +80,39 @@ void Parser::generate(RPN& rpn, const Token& token)
 	}
 
 	if (act == ActionType::INT) {
-		cmd = new IntCommand(new std::size_t);
+		//cmd = new IntCommand(new std::size_t);
 	}
 
 	if (act == ActionType::DOUBLE) {
-		cmd = new DoubleCommand(new std::size_t);
+		//cmd = new DoubleCommand(new std::size_t);
 	}
 
 	if (act == ActionType::BYTE) {
-		cmd = new ByteCommand(new std::size_t);
+		//cmd = new ByteCommand(new std::size_t);
 	}
 
 	if (act == ActionType::STRING) {
-		cmd = new StringCommand(new std::size_t);
+		//cmd = new StringCommand(new std::size_t);
 	}
 
 	if (act == ActionType::INT_CONST) {
-		cmd = new IntConstCommand(new int(std::stoi(token.getName())));
+		//cmd = new IntConstCommand(new int(std::stoi(token.getName())));
 	}
 
 	if (act == ActionType::DOUBLE_CONST) {
-		cmd = new DoubleConstCommand(new double(std::stod(token.getName())));
+		//cmd = new DoubleConstCommand(new double(std::stod(token.getName())));
 	}
 
 	if (act == ActionType::BYTE_CONST) {
-		cmd = new ByteConstCommand(new char(token.getName()[0]));
+		//cmd = new ByteConstCommand(new char(token.getName()[0]));
 	}
 
 	if (act == ActionType::STRING_CONST) {
-		cmd = new StringConstCommand(new const char*(token.getName().c_str()));
+		//cmd = new StringConstCommand(new const char*(token.getName().c_str()));
 	}
 
 	if (act == ActionType::ZERO_CONST) {
-		cmd = new ZeroConstCommand(new int(0));
+		//cmd = new ZeroConstCommand(new int(0));
 	}
 
 	if (cmd)

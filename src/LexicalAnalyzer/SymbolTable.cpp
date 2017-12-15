@@ -11,7 +11,7 @@ SymbolTableNode::SymbolTableNode() noexcept
 {
 }
 
-void SymbolTableNode::insert(const string& name, Data& data)
+void SymbolTableNode::insert(const string& name, Variable& data)
 {
     auto pr = table_.emplace(name, data);
     if (!pr.second)  { //already defined
@@ -23,7 +23,7 @@ void SymbolTableNode::insert(const string& name, Data& data)
     block_size_ += data.size();
 }
 
-const Data* SymbolTableNode::find(const string& name) const noexcept
+const Variable* SymbolTableNode::find(const string& name) const noexcept
 {
     auto it = table_.find(name);
     if (it != table_.end())
@@ -47,7 +47,7 @@ void SymbolTable::pop()
     tables_.pop_back();
 }
 
-void SymbolTable::insert(const string& name, Data& data)
+void SymbolTable::insert(const string& name, Variable& data)
 {
 	assert(!tables_.empty());
 	if (tables_.size() > 1) // level 0 for globes
@@ -55,7 +55,7 @@ void SymbolTable::insert(const string& name, Data& data)
 	return tables_.back().insert(name, data);
 }
 
-const Data& SymbolTable::find(const string& name) const
+const Variable& SymbolTable::find(const string& name) const
 {
     for (auto it = tables_.crbegin(); it != tables_.crend(); ++it) {
         const auto dataPtr = it->find(name); //search from top to bot

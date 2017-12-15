@@ -41,30 +41,30 @@ string asterius::to_string(const Position& position)
     return std::to_string(position.line()) + ':' + std::to_string(position.character());
 }
 
-//Data
-Data::Data(DataType type, size_t size, const Position& position) noexcept
+//Variable
+Variable::Variable(DataType type, size_t size, const Position& position) noexcept
     : type_(type),
     size_(size),
     position_(position)
 {
 }
 
-size_t Data::size() const noexcept
+size_t Variable::size() const noexcept
 {
     return size_;
 }
 
-const Position& Data::position() const noexcept
+const Position& Variable::position() const noexcept
 {
     return position_;
 }
 
-void Data::setOffset(size_t offset) noexcept
+void Variable::setOffset(size_t offset) noexcept
 {
     offset_ = offset;
 }
 
-void Data::setRelative(bool isRelative) noexcept
+void Variable::setRelative(bool isRelative) noexcept
 {
 	isRelative_ = isRelative;
 }

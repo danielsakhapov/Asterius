@@ -122,10 +122,10 @@ private:
 
 std::string to_string(const Position& position);
 
-class Data
+class Variable
 {
 public:
-    Data(DataType type, size_t size, const Position& position = Position()) noexcept;
+    Variable(DataType type, size_t size, const Position& position = Position()) noexcept;
 	size_t size() const noexcept;
     const Position& position() const noexcept;
     void setOffset(size_t offset) noexcept;
