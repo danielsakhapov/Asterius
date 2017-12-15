@@ -70,7 +70,7 @@ struct Action
 
 struct Variable
 {
-	Variable(const DataType&);
+	Variable(DataType dataType);
 	Variable(const DataType&, void*);
 	DataType type_;
 	void* data_;

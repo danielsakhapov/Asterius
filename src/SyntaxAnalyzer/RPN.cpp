@@ -25,9 +25,12 @@ std::size_t RPN::getCommandStackSize()
 	return commands_.size();
 }
 
-Variable RPN::execute()
+void RPN::execute()
 {
-	return Variable( DataType::INT, new int(0) );
+	auto sz = commands_.size();
+	for (size_t next = 0; next < sz; ++next) {
+		//commands_[next]->execute();
+	}
 }
 
 }

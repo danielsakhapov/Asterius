@@ -3,8 +3,8 @@
 namespace asterius
 {
 
-Variable::Variable(const DataType& type) :
-	type_(type), data_(nullptr)
+Variable::Variable(DataType dataType) :
+	type_(dataType), data_(nullptr)
 {}
 
 Variable::Variable(const DataType& type, void* data) :

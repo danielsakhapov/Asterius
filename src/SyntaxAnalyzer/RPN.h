@@ -23,7 +23,7 @@ public:
 	RPN(const std::vector<Command*>& commands, const std::vector<Variable>& stack);
 	void addCommand(Command* cmd);
 	std::size_t getCommandStackSize();
-	Variable execute();
+	void execute();
 private:
 	std::vector<Command*> commands_;
 	std::vector<Variable> stack_;

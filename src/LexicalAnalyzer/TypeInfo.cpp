@@ -42,7 +42,6 @@ string asterius::to_string(const Position& position)
 }
 
 //Data
-
 Data::Data(DataType type, size_t size, const Position& position) noexcept
     : type_(type),
     size_(size),
@@ -63,6 +62,11 @@ const Position& Data::position() const noexcept
 void Data::setOffset(size_t offset) noexcept
 {
     offset_ = offset;
+}
+
+void Data::setRelative(bool isRelative) noexcept
+{
+	isRelative_ = isRelative;
 }
 
 //Token
@@ -97,9 +101,4 @@ ElementType Token::getType() const noexcept
 const Position& Token::getPosition() const noexcept
 {
     return position_;
-}
-
-bool asterius::operator<(const Token& lhs, const Token& rhs)
-{
-    return lhs.name_ < rhs.name_;
 }

@@ -125,14 +125,15 @@ std::string to_string(const Position& position);
 class Data
 {
 public:
-    Data(DataType type, size_t size, const Position& position) noexcept;
-
-    size_t size() const noexcept;
+    Data(DataType type, size_t size, const Position& position = Position()) noexcept;
+	size_t size() const noexcept;
     const Position& position() const noexcept;
     void setOffset(size_t offset) noexcept;
+	void setRelative(bool isRelative) noexcept;
 private:
     DataType type_; 
     size_t offset_; //offset in stack
+	bool isRelative_;
     size_t size_; //can be carried through global table
     Position position_; //position in source file
 };
@@ -150,10 +151,7 @@ private:
     ElementType id_;
     std::string name_;
     Position position_;
-    friend bool operator<(const Token& lhs, const Token& rhs);
 };
-
-bool operator<(const Token& lhs, const Token& rhs);
 
 }
 #endif // !TYPE_INFO
