@@ -59,9 +59,14 @@ const Position& Variable::position() const noexcept
     return position_;
 }
 
-void Variable::setOffset(size_t offset) noexcept
+void Variable::setOffset(int offset) noexcept
 {
     offset_ = offset;
+}
+
+int Variable::offset() const noexcept
+{
+	return offset_;
 }
 
 void Variable::setRelative(bool isRelative) noexcept

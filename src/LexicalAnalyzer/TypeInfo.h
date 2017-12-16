@@ -128,11 +128,12 @@ public:
     Variable(DataType type, size_t size, const Position& position = Position()) noexcept;
 	size_t size() const noexcept;
     const Position& position() const noexcept;
-    void setOffset(size_t offset) noexcept;
+    void setOffset(int offset) noexcept;
+	int offset() const noexcept;
 	void setRelative(bool isRelative) noexcept;
 private:
     DataType type_; 
-    size_t offset_; //offset in stack
+    int offset_; //offset in stack
 	bool isRelative_;
     size_t size_; //can be carried through global table
     Position position_; //position in source file

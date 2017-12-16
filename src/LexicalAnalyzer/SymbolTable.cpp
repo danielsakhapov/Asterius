@@ -55,12 +55,16 @@ void SymbolTable::insert(const string& name, Variable& data)
 	return tables_.back().insert(name, data);
 }
 
-const Variable& SymbolTable::find(const string& name) const
+Variable SymbolTable::find(const string& name) const
 {
-    for (auto it = tables_.crbegin(); it != tables_.crend(); ++it) {
+	int shift = 0;
+    for (auto it = tables_.crbegin(); it != tables_.crend(); ++it, shift += it->block_size()) {
         const auto dataPtr = it->find(name); //search from top to bot
-        if (dataPtr)
-            return *dataPtr;
+		if (dataPtr) {
+			auto data = *dataPtr;
+			data.setOffset(data.offset() - shift);
+			return data;
+		}
     }
 	stringstream ss;
 	ss << "undeclared identifier " << name;
