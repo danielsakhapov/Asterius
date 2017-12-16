@@ -58,6 +58,7 @@ void SymbolTable::insert(const string& name, Variable& data)
 Variable SymbolTable::find(const string& name) const
 {
 	int shift = tables_.back().block_size();
+	shift = -shift;
     for (auto it = tables_.crbegin(); it != tables_.crend(); ++it) {
         const auto dataPtr = it->find(name); //search from top to bot
 		shift += it->block_size();
