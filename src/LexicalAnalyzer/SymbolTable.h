@@ -13,11 +13,11 @@ class SymbolTableNode
 {
 public:
     SymbolTableNode() noexcept;
-    void insert(const std::string& name, Variable& data);
-    const Variable* find(const std::string& name) const noexcept;
+    size_t insert(const std::string& name, size_t size);
+    const size_t* find(const std::string& name) const noexcept;
 	size_t block_size() const noexcept;
 private:
-    std::map<std::string, Variable> table_;
+    std::map<std::string, size_t> table_;
     size_t block_size_;
 };
 
@@ -27,8 +27,8 @@ class SymbolTable {
 public:
     void push();
     void pop();
-    void insert(const std::string& name, Variable& data);
-    Variable find(const std::string& name) const;
+    size_t insert(const std::string& name, size_t size);
+    size_t find(const std::string& name) const;
 	size_t block_size() const noexcept;
 private:
     std::vector<SymbolTableNode> tables_;

@@ -130,7 +130,9 @@ public:
     const Position& position() const noexcept;
     void setOffset(int offset) noexcept;
 	int offset() const noexcept;
+	size_t calc_offset(size_t block_begin) const noexcept;
 	void setRelative(bool isRelative) noexcept;
+	DataType type() const noexcept;
 private:
     DataType type_; 
     int offset_; //offset in stack

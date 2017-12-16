@@ -11,6 +11,8 @@
 #include "TypeInfo.h"
 #include "RPNStructures.h"
 #include "SyntaxStructures.h"
+#include "Common/Stack.h"
+#include "Common/BasicStructures.h"
 
 namespace asterius
 {
@@ -20,88 +22,42 @@ class Command;
 class RPN
 {
 public:
-	void addCommand(Command* cmd);
+	void addCommand(std::unique_ptr<Command> cmd);
 	void addOperand(const Variable& variable);
 	void createOperand(Variable& variable);
 	void* getOperandData(const Variable& variable) const noexcept;
 	Variable getNextOperand();
-	std::size_t getCommandStackSize(); //will be deleted soon
+	void setCommand(size_t position);
 	void execute();
 private:
-	std::vector<std::unique_ptr<Command> > commands_;
-	std::vector<std::pair<Variable, bool> > stack_; //bool flag is true for temp variables
+	Stack<12800> stack_; //stack to hold data
+	std::vector<std::unique_ptr<Command> > commands_; //RPN
+	size_t next_; //instruction pointer
+	std::vector<std::pair<Variable, bool> > operands_; //bool flag is true for temp variables
 };
 
 class Command
 {
 public:
 	explicit Command(const std::string& name);
-	virtual void execute(RPN& rpn) = 0;
 	const std::string& name() const noexcept;
+	virtual void execute(RPN& rpn) = 0;
 private:
 	std::string name_;
 };
 
-
-//??????????????????????????
-class IntCommand : public Command
+class WriteCommand : public Command 
 {
 public:
-	IntCommand(void*);
+	WriteCommand();
+	void execute(RPN& rpn);
 };
 
-class DoubleCommand : public Command
+class ReadCommand : public Command 
 {
 public:
-	DoubleCommand(void*);
-};
-
-class ByteCommand : public Command
-{
-public:
-	ByteCommand(void*);
-};
-
-class StringCommand : public Command
-{
-public:
-	StringCommand(void*);
-};
-
-class IntConstCommand : public Command
-{
-public:
-	IntConstCommand(void*);
-};
-
-class DoubleConstCommand : public Command
-{
-public:
-	DoubleConstCommand(void*);
-};
-
-class ByteConstCommand : public Command
-{
-public:
-	ByteConstCommand(void*);
-};
-
-class StringConstCommand : public Command
-{
-public:
-	StringConstCommand(void*);
-};
-
-class ZeroConstCommand : public Command
-{
-public:
-	ZeroConstCommand(void*);
-};
-
-class NameCommand : public Command
-{
-public:
-	NameCommand(void*);
+	ReadCommand();
+	void execute(RPN& rpn);
 };
 
 }

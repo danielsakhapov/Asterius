@@ -69,9 +69,21 @@ int Variable::offset() const noexcept
 	return offset_;
 }
 
+size_t Variable::calc_offset(size_t block_begin) const noexcept
+{
+	if (isRelative_)
+		return block_begin + offset_;
+	return offset_;
+}
+
 void Variable::setRelative(bool isRelative) noexcept
 {
 	isRelative_ = isRelative;
+}
+
+DataType Variable::type() const noexcept
+{
+	return type_;
 }
 
 //Token

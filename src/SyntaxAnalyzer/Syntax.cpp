@@ -19,6 +19,7 @@ RPN Parser::analyze()
 				transit(token);
 			}
 			else {
+				actionsStack_.pop();
 				elementsStack_.pop();
 				token = lexer_.getNextToken();
 			}
@@ -43,42 +44,14 @@ RPN Parser::analyze()
 
 void Parser::generate(RPN& rpn, const Token& token)
 {
-	ActionType act = actionsStack_.top();	
-	actionsStack_.pop();
+	ActionType act = actionsStack_.top();
 	
 	if (act == ActionType::EMPTY) {
 		return;
 	}
 	
 	Command* cmd = nullptr;
-
-	if (act == ActionType::BLOCK_BEGIN) {
-		locals_.push(std::vector<std::string>());
-	}
-
-	if (act == ActionType::BLOCK_END) {
-		for (const auto& it: locals_.top()) {
-			vars_.at(it).pop();
-		}
-		locals_.pop();
-	}
-
-	if (act == ActionType::NAME) {
-		std::string varName = token.getName();
-		if (std::find(locals_.top().begin(), locals_.top().end(), varName) != locals_.top().end()) {
-			throw std::logic_error("redefining variable");
-		}
-
-		locals_.top().push_back(varName);
-
-		if (vars_.find(varName) != vars_.end()) {
-			vars_.at(varName).push(rpn.getCommandStackSize());
-		}
-		else {
-			vars_.emplace(varName, std::move(std::stack<std::size_t>( { rpn.getCommandStackSize() } )));
-		}
-	}
-
+	
 	if (act == ActionType::INT) {
 		//cmd = new IntCommand(new std::size_t);
 	}
@@ -115,8 +88,8 @@ void Parser::generate(RPN& rpn, const Token& token)
 		//cmd = new ZeroConstCommand(new int(0));
 	}
 
-	if (cmd)
-		rpn.addCommand(std::move(cmd));
+	//if (cmd)
+		//rpn.addCommand(std::make_unique<Command>(cmd));
 }
 
 
@@ -134,6 +107,7 @@ void Parser::transit(const Token& token)
 			for (auto it2 = it.elements_.rbegin(); it2 != it.elements_.rend(); ++it2) {
 				elementsStack_.push(*it2);
 			}
+			actionsStack_.pop();
 			for (auto it2 = it.acts_.rbegin(); it2 != it.acts_.rend(); ++it2) {				
 				actionsStack_.push(*it2);
 			}
@@ -155,7 +129,7 @@ bool Parser::isTerminal(ElementType elementType) const noexcept
 Parser::Parser(Lexer&& lexer)
 	: lexer_(std::move(lexer))
 {
-	locals_.push({});
+	//locals_.push({});
 	elementsStack_.push(ElementType::FUNC);
 	actionsStack_.push(ActionType::EMPTY);
 

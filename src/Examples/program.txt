@@ -1,0 +1,6 @@
+fn main()
+{
+    let a be int;
+	read(a);
+	write(a);
+}

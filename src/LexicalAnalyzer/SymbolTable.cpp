@@ -11,19 +11,20 @@ SymbolTableNode::SymbolTableNode() noexcept
 {
 }
 
-void SymbolTableNode::insert(const string& name, Variable& data)
+size_t SymbolTableNode::insert(const string& name, size_t size)
 {
-    auto pr = table_.emplace(name, data);
+    auto pr = table_.emplace(name, size);
     if (!pr.second)  { //already defined
         stringstream ss;
-        ss << "name: " << name << " was already defined at: " << to_string(data.position());
+        ss << "name: " << name << " was already defined";
         throw logic_error(ss.str());
     }
-    data.setOffset(block_size_);
-    block_size_ += data.size();
+	size_t ret = block_size_;
+    block_size_ += size;
+	return ret;
 }
 
-const Variable* SymbolTableNode::find(const string& name) const noexcept
+const size_t* SymbolTableNode::find(const string& name) const noexcept
 {
     auto it = table_.find(name);
     if (it != table_.end())
@@ -47,27 +48,22 @@ void SymbolTable::pop()
     tables_.pop_back();
 }
 
-void SymbolTable::insert(const string& name, Variable& data)
+size_t SymbolTable::insert(const string& name, size_t size)
 {
 	assert(!tables_.empty());
-	if (tables_.size() > 1) // level 0 for globes
-		data.setRelative(true);
-	return tables_.back().insert(name, data);
+	return tables_.back().insert(name, size);
 }
 
-Variable SymbolTable::find(const string& name) const
+size_t SymbolTable::find(const string& name) const
 {
 	int shift = 0;
     for (auto it = tables_.crbegin(); it != tables_.crend(); ++it, shift += it->block_size()) {
-        const auto dataPtr = it->find(name); //search from top to bot
-		if (dataPtr) {
-			auto data = *dataPtr;
-			data.setOffset(data.offset() - shift);
-			return data;
-		}
+        const auto offsetPtr = it->find(name); //search from top to bot
+		if (offsetPtr)
+			return *offsetPtr - shift;
     }
 	stringstream ss;
-	ss << "undeclared identifier " << name;
+	ss << "undeclared identifier: " << name;
 	throw logic_error(ss.str());
 }
 

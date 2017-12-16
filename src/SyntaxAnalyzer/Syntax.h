@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "RPN.h"
+#include "LexicalAnalyzer/SymbolTable.h"
 #include "LexicalAnalyzer/Lexer.h"
 
 namespace asterius
@@ -25,9 +26,8 @@ private:
 	std::stack<std::size_t> labelsStack_;
 	std::stack<ActionType> actionsStack_;
 	std::stack<ElementType> elementsStack_;
-	std::stack<std::vector<std::string>> locals_;
-	std::map<std::string, std::stack<std::size_t>> vars_;
-	std::map<ElementType, std::vector<TransitionRule>> table_;
+	SymbolTable symbol_table_;
+	std::map<ElementType, std::vector<TransitionRule> > table_;
 
 	void transit(const Token& token);
 	bool isTerminal(ElementType elementType) const noexcept;
