@@ -12,6 +12,7 @@ constexpr auto Parser::toUnderlying(E e) const noexcept
 RPN Parser::analyze()
 {
 	RPN rpn;
+	symbol_table_.push(); //globes level
 	Token token = lexer_.getNextToken();
 	while (!lexer_.eof()) {
 		try {			
@@ -52,44 +53,125 @@ void Parser::generate(RPN& rpn, const Token& token)
 	
 	Command* cmd = nullptr;
 	
-	if (act == ActionType::INT) {
-		//cmd = new IntCommand(new std::size_t);
+	switch (act)
+	{
+	case asterius::ActionType::OR:
+		break;
+	case asterius::ActionType::EQ:
+		break;
+	case asterius::ActionType::LEQ:
+		break;
+	case asterius::ActionType::GEQ:
+		break;
+	case asterius::ActionType::NEQ:
+		break;
+	case asterius::ActionType::VAR:
+		rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(token.getName()), token.getName()));
+		break;
+	case asterius::ActionType::ADD:
+		break;
+	case asterius::ActionType::SUB:
+		break;
+	case asterius::ActionType::AND:
+		break;
+	case asterius::ActionType::NOT:
+		break;
+	case asterius::ActionType::DIV:
+		break;
+	case asterius::ActionType::INT:
+	{
+		Variable var(DataType::INT, INT_SIZE, token.getPosition());
+		symbol_table_.insert(name_, var);
+		rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
 	}
-
-	if (act == ActionType::DOUBLE) {
-		//cmd = new DoubleCommand(new std::size_t);
+	    break;
+	case asterius::ActionType::MULT:
+		break;
+	case asterius::ActionType::BYTE:
+		break;
+	case asterius::ActionType::NAME:
+		name_ = token.getName();
+		break;
+	case asterius::ActionType::MAIN:
+		break;
+	case asterius::ActionType::READ:
+		rpn.addCommand(std::make_unique<ReadCommand>());
+		break;
+	case asterius::ActionType::LESS:
+		break;
+	case asterius::ActionType::PLUS:
+		break;
+	case asterius::ActionType::MINUS:
+		break;
+	case asterius::ActionType::ARRAY:
+		break;
+	case asterius::ActionType::INDEX:
+		break;
+	case asterius::ActionType::EMPTY:
+		break;
+	case asterius::ActionType::WRITE:
+		rpn.addCommand(std::make_unique<WriteCommand>());
+		break;
+	case asterius::ActionType::UMINUS:
+		break;
+	case asterius::ActionType::ASSIGN:
+		break;
+	case asterius::ActionType::STRING:
+		break;
+	case asterius::ActionType::DOUBLE:
+		break;
+	case asterius::ActionType::IF_END:
+		break;
+	case asterius::ActionType::PRODUCT:
+		break;
+	case asterius::ActionType::GREATER:
+		break;
+	case asterius::ActionType::IF_BEGIN:
+		break;
+	case asterius::ActionType::ELSE_END:
+		break;
+	case asterius::ActionType::DIVISION:
+		break;
+	case asterius::ActionType::BLOCK_END:
+		break;
+	case asterius::ActionType::INT_CONST:
+		break;
+	case asterius::ActionType::FN_CREATE:
+		break;
+	case asterius::ActionType::WHILE_END:
+		break;
+	case asterius::ActionType::ELSE_START:
+		break;
+	case asterius::ActionType::VAR_CREATE:
+		break;
+	case asterius::ActionType::BYTE_CONST:
+		break;
+	case asterius::ActionType::ZERO_CONST:
+		break;
+	case asterius::ActionType::PARAMS_END:
+		break;
+	case asterius::ActionType::WHILE_BEGIN:
+		break;
+	case asterius::ActionType::BLOCK_BEGIN:
+		symbol_table_.push();
+		break;
+	case asterius::ActionType::PARAMS_BEGIN:
+		break;
+	case asterius::ActionType::DOUBLE_CONST:
+		break;
+	case asterius::ActionType::STRING_CONST:
+		break;
+	case asterius::ActionType::FUNCTION_CALL:
+		break;
+	case asterius::ActionType::CONDITION_END:
+		break;
+	case asterius::ActionType::CONDITION_BEGIN:
+		break;
+	case asterius::ActionType::ARRAY_DEMENSION:
+		break;
+	default:
+		break;
 	}
-
-	if (act == ActionType::BYTE) {
-		//cmd = new ByteCommand(new std::size_t);
-	}
-
-	if (act == ActionType::STRING) {
-		//cmd = new StringCommand(new std::size_t);
-	}
-
-	if (act == ActionType::INT_CONST) {
-		//cmd = new IntConstCommand(new int(std::stoi(token.getName())));
-	}
-
-	if (act == ActionType::DOUBLE_CONST) {
-		//cmd = new DoubleConstCommand(new double(std::stod(token.getName())));
-	}
-
-	if (act == ActionType::BYTE_CONST) {
-		//cmd = new ByteConstCommand(new char(token.getName()[0]));
-	}
-
-	if (act == ActionType::STRING_CONST) {
-		//cmd = new StringConstCommand(new const char*(token.getName().c_str()));
-	}
-
-	if (act == ActionType::ZERO_CONST) {
-		//cmd = new ZeroConstCommand(new int(0));
-	}
-
-	//if (cmd)
-		//rpn.addCommand(std::make_unique<Command>(cmd));
 }
 
 

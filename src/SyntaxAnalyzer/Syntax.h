@@ -29,6 +29,9 @@ private:
 	SymbolTable symbol_table_;
 	std::map<ElementType, std::vector<TransitionRule> > table_;
 
+	//temp variables
+	std::string name_;
+
 	void transit(const Token& token);
 	bool isTerminal(ElementType elementType) const noexcept;
 	template <typename E>

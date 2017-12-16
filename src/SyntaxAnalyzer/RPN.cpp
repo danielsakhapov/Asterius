@@ -18,12 +18,19 @@ void RPN::execute()
 
 void RPN::addOperand(const Variable& variable)
 {
-	stack_.addVariable(variable);
+	// add existing variable to operands
 	operands_.emplace_back(variable, false);
+}
+
+void RPN::createVariable(const Variable& variable)
+{
+	//allocates variable on stack
+	stack_.addVariable(variable);
 }
 
 void RPN::createOperand(Variable& variable)
 {
+	// create temp variable and add to operands
 	stack_.createVariable(variable);
 	operands_.emplace_back(variable, true);
 }
@@ -46,6 +53,13 @@ void RPN::setCommand(size_t position)
 {
 	assert(position < commands_.size());
 	next_ = position;
+}
+
+void RPN::print() const
+{
+	for (auto&& ptr: commands_) {
+		std::cout << ptr->name() << '\n';
+	}
 }
 
 //Commands
@@ -98,6 +112,28 @@ void ReadCommand::execute(RPN& rpn)
 	default:
 		break;
 	}
+}
+
+OperandCommand::OperandCommand(const Variable& variable, const std::string& name)
+	: Command("operand " + name),
+	variable_(variable)
+{
+}
+
+void OperandCommand::execute(RPN& rpn)
+{
+	rpn.addOperand(variable_);
+}
+
+CreateVariableCommand::CreateVariableCommand(const Variable& variable, const std::string& name)
+	: Command("create variable " + name),
+	variable_(variable)
+{
+}
+
+void CreateVariableCommand::execute(RPN& rpn)
+{
+	rpn.createVariable(variable_);
 }
 
 }

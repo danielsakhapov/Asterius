@@ -45,7 +45,8 @@ string asterius::to_string(const Position& position)
 Variable::Variable(DataType type, size_t size, const Position& position) noexcept
     : type_(type),
     size_(size),
-    position_(position)
+    position_(position),
+	isRelative_(false)
 {
 }
 

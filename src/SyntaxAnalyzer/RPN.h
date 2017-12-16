@@ -23,11 +23,13 @@ class RPN
 {
 public:
 	void addCommand(std::unique_ptr<Command> cmd);
-	void addOperand(const Variable& variable);
-	void createOperand(Variable& variable);
+	void addOperand(const Variable& variable); //add existing variable to operands
+	void createOperand(Variable& variable); // create temp variable and add to operands
+	void createVariable(const Variable& variable); //allocates variable on stack
 	void* getOperandData(const Variable& variable) const noexcept;
 	Variable getNextOperand();
 	void setCommand(size_t position);
+	void print() const;
 	void execute();
 private:
 	Stack<12800> stack_; //stack to hold data
@@ -50,14 +52,32 @@ class WriteCommand : public Command
 {
 public:
 	WriteCommand();
-	void execute(RPN& rpn);
+	void execute(RPN& rpn) override;
 };
 
 class ReadCommand : public Command 
 {
 public:
 	ReadCommand();
-	void execute(RPN& rpn);
+	void execute(RPN& rpn) override;
+};
+
+class OperandCommand : public Command
+{
+public:
+	OperandCommand(const Variable& variable, const std::string& name);
+	void execute(RPN& rpn) override;
+private:
+	Variable variable_;
+};
+
+class CreateVariableCommand : public Command
+{
+public:
+	CreateVariableCommand(const Variable& variable, const std::string& name);
+	void execute(RPN& rpn) override;
+private:
+	Variable variable_;
 };
 
 }
