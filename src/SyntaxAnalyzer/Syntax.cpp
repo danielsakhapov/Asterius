@@ -14,11 +14,12 @@ RPN Parser::analyze()
 	RPN rpn({}, {});
 	Token token = lexer_.getNextToken();
 	while (!lexer_.eof()) {
-		try {			
-			if (!isTerminal(elementsStack_.top())) {				
+		try {
+			if (!isTerminal(elementsStack_.top())) {
 				transit(token);
 			}
 			else {
+				actionsStack_.pop();
 				elementsStack_.pop();
 				token = lexer_.getNextToken();
 			}
@@ -43,8 +44,7 @@ RPN Parser::analyze()
 
 void Parser::generate(RPN& rpn, const Token& token)
 {
-	ActionType act = actionsStack_.top();	
-	actionsStack_.pop();
+	ActionType act = actionsStack_.top();
 	
 	if (act == ActionType::EMPTY) {
 		return;
@@ -134,6 +134,7 @@ void Parser::transit(const Token& token)
 			for (auto it2 = it.elements_.rbegin(); it2 != it.elements_.rend(); ++it2) {
 				elementsStack_.push(*it2);
 			}
+			actionsStack_.pop();
 			for (auto it2 = it.acts_.rbegin(); it2 != it.acts_.rend(); ++it2) {				
 				actionsStack_.push(*it2);
 			}
@@ -650,11 +651,11 @@ Parser::Parser(Lexer&& lexer)
 		std::vector<TransitionRule>({
 			{ 
 				{ ElementType::PLUS, ElementType::TERM, ElementType::ADD_EXPR },
-				{ ActionType::EMPTY, ActionType::PLUS, ActionType::EMPTY } 
+				{ ActionType::EMPTY, ActionType::EMPTY, ActionType::PLUS } 
 			},
 			{ 
 				{ ElementType::MINUS, ElementType::TERM, ElementType::ADD_EXPR }, 
-				{ ActionType::EMPTY, ActionType::MINUS, ActionType::EMPTY} 
+				{ ActionType::EMPTY, ActionType::EMPTY, ActionType::MINUS } 
 			},
 			{ 
 				{ ElementType::EMPTY },

@@ -1,6 +1,6 @@
 fn f()
 {
-    if (a greater b) {
+    if (a + 1) {
         write(a);
     }
     else {
