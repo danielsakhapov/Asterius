@@ -46,7 +46,7 @@ Variable::Variable(DataType type, size_t size, const Position& position) noexcep
     : type_(type),
     size_(size),
     position_(position),
-	isRelative_(false)
+    isRelative_(false)
 {
 }
 
@@ -67,24 +67,29 @@ void Variable::setOffset(int offset) noexcept
 
 int Variable::offset() const noexcept
 {
-	return offset_;
+    return offset_;
 }
 
 size_t Variable::calc_offset(size_t block_begin) const noexcept
 {
-	if (isRelative_)
-		return block_begin + offset_;
-	return offset_;
+    if (isRelative_)
+        return block_begin + offset_;
+    return offset_;
 }
 
 void Variable::setRelative(bool isRelative) noexcept
 {
-	isRelative_ = isRelative;
+    isRelative_ = isRelative;
+}
+
+bool Variable::isRelative() const noexcept
+{
+    return isRelative_;
 }
 
 DataType Variable::type() const noexcept
 {
-	return type_;
+    return type_;
 }
 
 //Token

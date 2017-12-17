@@ -190,7 +190,7 @@ size_t Lexer::getCol(char c)
         return 14;
     case ',':
         return 15;
-	case '\t':
+    case '\t':
     case ' ':
         return 16;
     case '\n':

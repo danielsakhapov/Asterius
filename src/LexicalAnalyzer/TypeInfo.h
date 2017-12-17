@@ -23,55 +23,55 @@ enum class DataType
 enum class ElementType
 {
     // NonTerminals
-	START,	
-	NEXT_PARAM,	
-	FUNC,
-	SUB_FUNC,
-	ARGS,
-	BLOCK,
-	TYPE_DESC,
-	ZARR,
-	NEXT_ARG,
-	TYPE,
-	STATEMENT,
-	EXPR,
-	DESC,
-	INDEX,
-	PARAM,
-	MULT_EXPR,
-	ADD_EXPR,
-	COMP_EXPR,
-	AND_EXPR,
-	OR_EXPR,
-	NEG,	
-	LEXPR,
-	OR_TERM,
-	AND_FACTOR,
-	LCOMP_EXPR,
-	TERM,
-	FACTOR,
-	Z,
-	TYPEDEF,
-	VALUE,
+    START,  
+    NEXT_PARAM, 
+    FUNC,
+    SUB_FUNC,
+    ARGS,
+    BLOCK,
+    TYPE_DESC,
+    ZARR,
+    NEXT_ARG,
+    TYPE,
+    STATEMENT,
+    EXPR,
+    DESC,
+    INDEX,
+    PARAM,
+    MULT_EXPR,
+    ADD_EXPR,
+    COMP_EXPR,
+    AND_EXPR,
+    OR_EXPR,
+    NEG,    
+    LEXPR,
+    OR_TERM,
+    AND_FACTOR,
+    LCOMP_EXPR,
+    TERM,
+    FACTOR,
+    Z,
+    TYPEDEF,
+    VALUE,
     ELSEST,
     EMPTY,
-	FINISH,
+    FINISH,
     ASS,
     // Terminals
     MAIN,
     LET,
-	BE,
-	BY,
-	FN,
+    BE,
+    BY,
+    FN,
     OF,
     ARRAY,
     INT,
-	DOUBLE,
-	BYTE,
+    DOUBLE,
+    BYTE,
     STRING,
     INT_CONST,
-	DOUBLE_CONST,
-	BYTE_CONST,
+    DOUBLE_CONST,
+    BYTE_CONST,
     STRING_CONST,
     NAME,
     WHILE,
@@ -126,17 +126,18 @@ class Variable
 {
 public:
     Variable(DataType type, size_t size, const Position& position = Position()) noexcept;
-	size_t size() const noexcept;
+    size_t size() const noexcept;
     const Position& position() const noexcept;
     void setOffset(int offset) noexcept;
-	int offset() const noexcept;
-	size_t calc_offset(size_t block_begin) const noexcept;
-	void setRelative(bool isRelative) noexcept;
-	DataType type() const noexcept;
+    int offset() const noexcept;
+    size_t calc_offset(size_t block_begin) const noexcept;
+    void setRelative(bool isRelative) noexcept;
+    bool isRelative() const noexcept;
+    DataType type() const noexcept;
 private:
     DataType type_; 
     int offset_; //offset in stack
-	bool isRelative_;
+    bool isRelative_;
     size_t size_; //can be carried through global table
     Position position_; //position in source file
 };

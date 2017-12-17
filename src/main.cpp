@@ -8,10 +8,10 @@ using namespace asterius;
 
 int main()
 {
-	Lexer lexer("src/Examples/program.txt");
-	Parser parser(std::move(lexer));
-	RPN mainRpn = parser.analyze();
-	mainRpn.print();
-	mainRpn.execute();
-	return 0;
+    Lexer lexer("src/Examples/program.txt");
+    Parser parser(std::move(lexer));
+    RPN mainRpn = parser.analyze();
+    mainRpn.print();
+    mainRpn.execute();
+    return 0;
 }
