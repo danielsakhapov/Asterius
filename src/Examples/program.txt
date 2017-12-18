@@ -1,6 +1,8 @@
 fn main()
 {
-    let a be int;
+	let a be int;
+	let b be int;
     read(a);
-    write(a);
+	read(b);
+    write(a + b);
 }

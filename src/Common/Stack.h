@@ -41,7 +41,7 @@ public:
 
     void* getData(const Variable& variable) const noexcept
     {
-        assert(variable.calc_offset(block_begin_) < top_);
+        assert(variable.calc_offset(block_begin_) <= top_);
         return (void*)(buf_ + variable.calc_offset(block_begin_));
     }
 
