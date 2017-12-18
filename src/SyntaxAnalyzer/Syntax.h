@@ -3,6 +3,7 @@
 
 #include <map>
 #include <stack>
+#include <deque>
 #include <vector>
 #include <string>
 #include <utility>
@@ -24,15 +25,15 @@ public:
 private:
     Lexer lexer_;
     std::stack<std::size_t> labelsStack_;
-    std::stack<ActionType> actionsStack_;
-    std::stack<ElementType> elementsStack_;
+    std::deque<ActionType> actionsStack_;
+    std::deque<ElementType> elementsStack_;
     SymbolTable symbol_table_;
     std::map<ElementType, std::vector<TransitionRule> > table_;
 
     //temp variables
     std::string name_;
 
-    void transit(const Token& token);
+    void transit(ElementType elementType, const Token& token);
     bool isTerminal(ElementType elementType) const noexcept;
     template <typename E>
     constexpr auto toUnderlying(E e) const noexcept;

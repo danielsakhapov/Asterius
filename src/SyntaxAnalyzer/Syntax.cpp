@@ -1,4 +1,6 @@
 #include "Syntax.h"
+#include <algorithm>
+#include <iterator>
 
 namespace asterius
 {
@@ -16,22 +18,20 @@ RPN Parser::analyze()
     Token token = lexer_.getNextToken();
     while (!lexer_.eof()) {
         try {           
-            if (!isTerminal(elementsStack_.top())) {                
-                transit(token);
+            auto topElement = elementsStack_.back();
+            generate(rpn, token);
+            if (!isTerminal(topElement)) {
+                elementsStack_.pop_back();
+                actionsStack_.pop_back();
+                transit(topElement, token);
             }
             else {
-                actionsStack_.pop();
-                elementsStack_.pop();
+                elementsStack_.pop_back(); //some match!
+                actionsStack_.pop_back();
                 token = lexer_.getNextToken();
             }
-            if (elementsStack_.top() == ElementType::EMPTY)
-                elementsStack_.pop();
-            if (!actionsStack_.empty()) {
-                generate(rpn, token);
-            }
-            else {
-                throw std::logic_error("there is smth bad with your stack, sir!");
-            }
+            if (actionsStack_.empty())
+                throw std::logic_error("invalid syntax near: " + to_string(token.getPosition()));
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what() << " ";
@@ -45,7 +45,7 @@ RPN Parser::analyze()
 
 void Parser::generate(RPN& rpn, const Token& token)
 {
-    switch (actionsStack_.top())
+    switch (actionsStack_.back())
     {
     case asterius::ActionType::OR:
         break;
@@ -172,27 +172,18 @@ void Parser::generate(RPN& rpn, const Token& token)
 
 
 
-void Parser::transit(const Token& token)
+void Parser::transit(ElementType elementType, const Token& token)
 {
-    if (elementsStack_.top() == ElementType::EMPTY) {
-        elementsStack_.pop();
-        return;
-    }
-    const auto& rules = table_.at(elementsStack_.top());
+    const auto& rules = table_.at(elementType);
     for (const auto& it: rules) {
-        if (token.getType() == it.elements_[0] || it.elements_[0] == ElementType::EMPTY) {
-            elementsStack_.pop();
-            for (auto it2 = it.elements_.rbegin(); it2 != it.elements_.rend(); ++it2) {
-                elementsStack_.push(*it2);
-            }
-            actionsStack_.pop();
-            for (auto it2 = it.acts_.rbegin(); it2 != it.acts_.rend(); ++it2) {             
-                actionsStack_.push(*it2);
-            }
+        if (token.getType() == it.elements_[0]) {
+            std::copy(it.elements_.crbegin(), it.elements_.crend(), std::back_inserter(elementsStack_));
+            std::copy(it.acts_.crbegin(), it.acts_.crend(), std::back_inserter(actionsStack_));
             return;
         }
     }
-    throw std::logic_error("wow! l00kz like 1'm c0nfuzzzed");
+    if (!(rules.back().elements_[0] == ElementType::EMPTY))
+        throw std::logic_error("wow! l00kz like 1'm c0nfuzzzed");
 }
 
 
@@ -208,8 +199,8 @@ Parser::Parser(Lexer&& lexer)
     : lexer_(std::move(lexer))
 {
     //locals_.push({});
-    elementsStack_.push(ElementType::FUNC);
-    actionsStack_.push(ActionType::EMPTY);
+    elementsStack_.push_back(ElementType::FUNC);
+    actionsStack_.push_back(ActionType::EMPTY);
 
     table_.emplace(
         ElementType::FUNC,
