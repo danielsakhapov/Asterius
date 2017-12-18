@@ -25,9 +25,10 @@ public:
         top_ += variable.size();
     }
 
-    void createVariable(Variable& variable) noexcept
+    void createVariable(Variable& variable, void* src) noexcept
     {
         variable.setOffset(top_ - block_begin_);
+		memcpy(top_ptr(), src, variable.size());
         addVariable(variable);
     }
 
@@ -57,6 +58,11 @@ public:
         block_begins_.pop_back();
     }
 private:
+	void* top_ptr()
+	{
+		return static_cast<void*>(buf_ + top_);
+	}
+
     size_t block_begin_;
     size_t top_;
     std::vector<size_t> block_begins_;

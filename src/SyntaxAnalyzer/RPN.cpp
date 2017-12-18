@@ -28,10 +28,10 @@ void RPN::createVariable(const Variable& variable)
     stack_.addVariable(variable);
 }
 
-void RPN::createOperand(Variable& variable)
+void RPN::createOperand(Variable& variable, void* src)
 {
     // create temp variable and add to operands
-    stack_.createVariable(variable);
+    stack_.createVariable(variable, src);
     operands_.emplace_back(variable, true);
 }
 

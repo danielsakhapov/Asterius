@@ -24,7 +24,7 @@ class RPN
 public:
     void addCommand(std::unique_ptr<Command> cmd);
     void addOperand(const Variable& variable); //add existing variable to operands
-    void createOperand(Variable& variable); // create temp variable and add to operands
+    void createOperand(Variable& variable, void* src); // create temp variable and add to operands
     void createVariable(const Variable& variable); //allocates variable on stack
     void* getOperandData(const Variable& variable) const noexcept;
     Variable getNextOperand();
