@@ -1,0 +1,11 @@
+fn main()
+{
+    let a be int;
+    let b be int;
+    if (a less b) {
+        write(a);
+    }
+    else {
+        write(b);
+    }
+}

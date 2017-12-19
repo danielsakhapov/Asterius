@@ -3,33 +3,111 @@
 using namespace std;
 using namespace asterius;
 
-Data::Data() noexcept
-    : isRef_(false)
+//Posistion
+Position::Position() noexcept
+    : line_(1),
+    char_(1)
 {
 }
 
-Data::Data(DataType type, size_t size, size_t line, size_t chr, char isRef) noexcept
+void Position::newLine() noexcept
+{
+    ++line_;
+    char_ = 1;
+}
+
+void Position::operator++() noexcept
+{
+    ++char_;
+}
+
+void Position::operator--() noexcept
+{
+    --char_;
+}
+
+size_t Position::line() const noexcept
+{
+    return line_;
+}
+
+size_t Position::character() const noexcept
+{
+    return char_;
+}
+
+string asterius::to_string(const Position& position)
+{
+    return std::to_string(position.line()) + ':' + std::to_string(position.character());
+}
+
+//Variable
+Variable::Variable(DataType type, size_t size, const Position& position) noexcept
     : type_(type),
     size_(size),
-    line_(line),
-    char_(chr),
-    isRef_(isRef)
+    position_(position),
+    isRelative_(false)
 {
 }
 
-Token Token::none;
+size_t Variable::size() const noexcept
+{
+    return size_;
+}
 
-Token::Token(ElementType id, std::string&& name, Data data)
-    : id_(id),
-    name_(std::move(name)),
-    data_(data)
+const Position& Variable::position() const noexcept
+{
+    return position_;
+}
+
+void Variable::setOffset(int offset) noexcept
+{
+    offset_ = offset;
+}
+
+int Variable::offset() const noexcept
+{
+    return offset_;
+}
+
+size_t Variable::calc_offset(size_t block_begin) const noexcept
+{
+    if (isRelative_)
+        return block_begin + offset_;
+    return offset_;
+}
+
+void Variable::setRelative(bool isRelative) noexcept
+{
+    isRelative_ = isRelative;
+}
+
+bool Variable::isRelative() const noexcept
+{
+    return isRelative_;
+}
+
+DataType Variable::type() const noexcept
+{
+    return type_;
+}
+
+//Token
+Token::Token()
 {
 }
 
-Token::Token(ElementType id, const std::string& name, Data data)
+Token::Token(ElementType id, const Position& position, std::string&& name)
     : id_(id),
-    name_(name),
-    data_(data)
+    position_(position),
+    name_(std::move(name))
+{
+}
+
+Token::Token(ElementType id, const Position& position, const std::string& name)
+    : id_(id),
+    position_(position),
+    name_(name)
 {
 }
 
@@ -43,7 +121,7 @@ ElementType Token::getType() const noexcept
     return id_;
 }
 
-bool asterius::operator<(const Token& lhs, const Token& rhs)
+const Position& Token::getPosition() const noexcept
 {
-    return lhs.name_ < rhs.name_;
+    return position_;
 }

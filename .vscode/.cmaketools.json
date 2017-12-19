@@ -25,7 +25,7 @@
                 "crossReferences": {
                   "backtrace": [
                     {
-                      "line": 25,
+                      "line": 26,
                       "name": "add_executable",
                       "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
                     },
@@ -37,7 +37,7 @@
                     {
                       "backtrace": [
                         {
-                          "line": 9,
+                          "line": 10,
                           "name": "add_definitions",
                           "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
                         },
@@ -46,19 +46,6 @@
                         }
                       ],
                       "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 11,
-                          "name": "include_directories",
-                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
                     },
                     {
                       "backtrace": [
@@ -111,12 +98,25 @@
                         }
                       ],
                       "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 16,
+                          "name": "include_directories",
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/home/daniel/Projects/university/Asterius/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
                     }
                   ]
                 },
                 "fileGroups": [
                   {
-                    "compileFlags": "-g   -std=c++1z",
+                    "compileFlags": " -Wall -Wextra -pedantic -g   -std=c++1z",
                     "defines": [
                       "SYNTAX_DEBUG"
                     ],
@@ -153,7 +153,7 @@
                   }
                 ],
                 "fullName": "Asterius",
-                "linkLanguageFlags": "-g",
+                "linkLanguageFlags": "-Wall -Wextra -pedantic -g",
                 "linkerLanguage": "CXX",
                 "name": "Asterius",
                 "sourceDirectory": "/home/daniel/Projects/university/Asterius",
@@ -164,7 +164,7 @@
         ]
       }
     ],
-    "cookie": "0.008520062195908729",
+    "cookie": "0.06036824293169607",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

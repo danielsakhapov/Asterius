@@ -4,6 +4,14 @@
 namespace asterius
 {
 
+//DEFINES
+
+#ifdef _DEBUG
+  #define DEBUG_CODE(code) code
+#else // DEBUG
+  #define DEBUG_CODE(code)
+#endif
+
 // HELPER FUNCTIONS
 
 bool isDigit(char c);

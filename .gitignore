@@ -55,9 +55,6 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
-*.sln
-*.vcxproj
-*.vcxproj.filters
 
 # Visual C++ cache files
 ipch/
@@ -73,7 +70,6 @@ ipch/
 # Visual Studio profiler
 *.psess
 *.vsp
-*.vspx
 *.sap
 
 # Visual Studio Trace Files

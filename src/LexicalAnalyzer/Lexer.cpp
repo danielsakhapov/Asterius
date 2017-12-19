@@ -76,8 +76,6 @@ vector<vector<Lexer::State> > Lexer::tr = {
 
 Lexer::Lexer(const string& filename)
     : reader_(filename),
-    line_(1),
-    character_(1),
     sem {
         /*1*/{ &Lexer::sem1, &Lexer::sem2, &Lexer::sem3, &Lexer::sem4, &Lexer::sem5, &Lexer::sem0, //6
         &Lexer::sem6, &Lexer::sem7, &Lexer::sem8, &Lexer::sem9, &Lexer::sem10, &Lexer::sem11, //12
@@ -117,7 +115,7 @@ Token Lexer::getNextToken()
         func fn = sem[(size_t)state][col];
         (this->*fn)();
         //invoke(fn, this);
-        state = tr[(size_t)state][col];
+        state = tr[(int)state][col];
         getch();
     }
     return token_;
@@ -130,18 +128,16 @@ bool Lexer::eof()
 
 void Lexer::stepBack()
 {
-    --character_;
+    --position_;
     reader_.seekg(reader_.tellg() - streamoff(1));
 }
 
 void Lexer::getch()
 {
-    if (peek() == '\n') {
-        ++line_;
-        character_ = 1;
-    }
+    if (peek() == '\n')
+        position_.newLine();
     else
-        ++character_;
+        ++position_;
     reader_.get();
 }
 
@@ -194,6 +190,7 @@ size_t Lexer::getCol(char c)
         return 14;
     case ',':
         return 15;
+    case '\t':
     case ' ':
         return 16;
     case '\n':
@@ -220,47 +217,47 @@ void Lexer::sem2()
 
 void Lexer::sem3()
 {
-    token_ = Token(ElementType::PLUS, "+");
+    token_ = Token(ElementType::PLUS, position_, "+");
 }
 
 void Lexer::sem4()
 {
-    token_ = Token(ElementType::MINUS, "-");
+    token_ = Token(ElementType::MINUS, position_, "-");
 }
 
 void Lexer::sem5()
 {
-    token_ = Token(ElementType::PRODUCT, "*");
+    token_ = Token(ElementType::PRODUCT, position_, "*");
 }
 
 void Lexer::sem6()
 {
-    token_ = Token(ElementType::OPEN_FIGURE, "{");
+    token_ = Token(ElementType::OPEN_FIGURE, position_, "{");
 }
 
 void Lexer::sem7()
 {
-    token_ = Token(ElementType::CLOSE_FIGURE, "}");
+    token_ = Token(ElementType::CLOSE_FIGURE, position_, "}");
 }
 
 void Lexer::sem8()
 {
-    token_ = Token(ElementType::OPEN_BRACKET, "(");
+    token_ = Token(ElementType::OPEN_BRACKET, position_, "(");
 }
 
 void Lexer::sem9()
 {
-    token_ = Token(ElementType::CLOSE_BRACKET, ")");
+    token_ = Token(ElementType::CLOSE_BRACKET, position_, ")");
 }
 
 void Lexer::sem10()
 {
-    token_ = Token(ElementType::OPEN_SQUARE, "[");
+    token_ = Token(ElementType::OPEN_SQUARE, position_, "[");
 }
 
 void Lexer::sem11()
 {
-    token_ = Token(ElementType::CLOSE_SQUARE, "]");
+    token_ = Token(ElementType::CLOSE_SQUARE, position_, "]");
 }
 
 void Lexer::sem12()
@@ -270,7 +267,7 @@ void Lexer::sem12()
 
 void Lexer::sem13()
 {
-    token_ = Token(ElementType::STATEMENT_END, ";");
+    token_ = Token(ElementType::STATEMENT_END, position_, ";");
 }
 
 void Lexer::sem14()
@@ -281,7 +278,7 @@ void Lexer::sem14()
 
 void Lexer::sem15()
 {
-    token_ = Token(ElementType::COMMA, ",");
+    token_ = Token(ElementType::COMMA, position_, ",");
 }
 
 void Lexer::sem16()
@@ -294,7 +291,7 @@ void Lexer::sem17()
 {
     //finished reading word
     stepBack(); //Met next symbol step back for cases like smth+smth
-    token_ = Token(getElementType(name_), name_);
+    token_ = Token(getElementType(name_), position_, name_);
 }
 
 void Lexer::sem18()
@@ -306,7 +303,7 @@ void Lexer::sem18()
 void Lexer::sem19()
 {   //finished reading integer
     stepBack(); //Met next symbol step back for cases like smth+smth
-    token_ = Token(ElementType::INT_CONST, to_string(integer_));
+    token_ = Token(ElementType::INT_CONST, position_, std::to_string(integer_));
 }
 
 void Lexer::sem20()
@@ -327,43 +324,43 @@ void Lexer::sem22()
 {
 
     stepBack(); //Met next symbol step back for cases like smth+smth
-    token_ = Token(ElementType::DOUBLE_CONST, to_string(double_));
+    token_ = Token(ElementType::DOUBLE_CONST, position_, std::to_string(double_));
 }
 
 void Lexer::sem23()
 {
-    token_ = Token(ElementType::DIVISION, "/");
+    token_ = Token(ElementType::DIVISION, position_, "/");
 }
 
 void Lexer::sem24()
 {   //end of const string
-    token_ = Token(ElementType::STRING_CONST, name_);
+    token_ = Token(ElementType::STRING_CONST, position_, name_);
 }
 
 void Lexer::err1()
 {
     stringstream ss;
-    ss << "unexpected token at: " << line_ << ':' << character_ << " symbol:" << peek();
+    ss << "unexpected token at: " << to_string(position_) << " symbol:" << peek();
     throw logic_error(ss.str());
 }
 
 void Lexer::err2()
 {
     stringstream ss;
-    ss << "name starts with number at: " << line_ << ':' << character_;
+    ss << "name starts with number at: " << to_string(position_);
     throw logic_error(ss.str());
 }
 
 void Lexer::err3()
 {
     stringstream ss;
-    ss << "already has dot at: " << line_ << ':' << character_;
+    ss << "already has dot at: " << to_string(position_);
     throw logic_error(ss.str());
 }
 
 void Lexer::err4()
 {
     stringstream ss;
-    ss << "^ expected at: " << line_ << ':' << character_;
+    ss << "^ expected at: " << to_string(position_);
     throw logic_error(ss.str());
 }
