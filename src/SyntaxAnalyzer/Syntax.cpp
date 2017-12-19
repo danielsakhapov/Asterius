@@ -278,9 +278,34 @@ Parser::Parser(Lexer&& lexer)
             { 
                 { ElementType::STRING },
                 { ActionType::STRING }
-            }        
+            },
+			{
+				{ ElementType::ARRAY, ElementType::OF, ElementType::LTYPEDEF, ElementType::OF, ElementType::INT_CONST, ElementType::ZARR },
+				{ ActionType::ARRAY, ActionType::EMPTY, ActionType::EMPTY, ActionType::ARRAY_DEMENSION, ActionType::INT_CONST, ActionType::EMPTY }
+			},
         })
     );
+	table_.emplace(
+		ElementType::LTYPEDEF,
+		std::vector<TransitionRule>({
+			{
+				{ ElementType::INT },
+				{ ActionType::INT }
+			},
+			{
+				{ ElementType::DOUBLE },
+				{ ActionType::DOUBLE }
+			},
+			{
+				{ ElementType::BYTE },
+				{ ActionType::BYTE }
+			},
+			{
+				{ ElementType::STRING },
+				{ ActionType::STRING }
+			},
+	})
+	);
     table_.emplace(
         ElementType::VALUE, 
         std::vector<TransitionRule>({
@@ -299,11 +324,7 @@ Parser::Parser(Lexer&& lexer)
             { 
                 { ElementType::STRING_CONST },
                 { ActionType::ASS_STRING_CONST }
-            },
-            { 
-                { ElementType::ARRAY, ElementType::OF, ElementType::INT_CONST, ElementType::ZARR },
-                { ActionType::ARRAY, ActionType::ARRAY_DEMENSION, ActionType::INT_CONST, ActionType::EMPTY }
-            },
+            },          
             { 
                 { ElementType::EMPTY },
                 {} 

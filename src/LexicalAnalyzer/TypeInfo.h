@@ -9,7 +9,7 @@ namespace asterius
 #define CHAR_SIZE 1
 #define INT_SIZE 4
 #define FLOAT_SIZE 8
-#define INDEX_OF_FIRST_TERMINAL 34
+#define INDEX_OF_FIRST_TERMINAL 35
 
 enum class DataType
 {
@@ -56,6 +56,7 @@ enum class ElementType
     ELSEST,
     EMPTY,
     FINISH,
+	LTYPEDEF,
     ASS,
     // Terminals
     MAIN,
