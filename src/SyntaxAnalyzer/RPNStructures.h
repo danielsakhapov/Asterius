@@ -14,13 +14,9 @@ enum class ActionType
     GEQ,
     NEQ,
     VAR,
-    ADD,
-    SUB,
     AND,
-    NOT,
-    DIV,
+    NOT,    
     INT,
-    MULT,
     BYTE,
     NAME,
     MAIN,
@@ -57,9 +53,13 @@ enum class ActionType
     DOUBLE_CONST,
     STRING_CONST,
     FUNCTION_CALL,
+	ASS_INT_CONST,
     CONDITION_END,
+	ASS_BYTE_CONST,
     CONDITION_BEGIN,
-    ARRAY_DEMENSION
+    ARRAY_DEMENSION,
+	ASS_STRING_CONST,
+	ASS_DOUBLE_CONST,
 };
 
 struct Action

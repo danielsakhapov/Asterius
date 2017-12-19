@@ -38,6 +38,13 @@ RPN Parser::analyze()
             throw;
         }
     }
+	while (!actionsStack_.empty()) {
+		generate(rpn, token);
+		auto topElement = elementsStack_.back();
+		elementsStack_.pop_back();
+		actionsStack_.pop_back();
+		transit(topElement, token);
+	}
     return rpn;
 }
 
@@ -60,15 +67,9 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::VAR:
         rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(token.getName()), token.getName()));
         break;
-    case asterius::ActionType::ADD:
-        break;
-    case asterius::ActionType::SUB:
-        break;
     case asterius::ActionType::AND:
         break;
     case asterius::ActionType::NOT:
-        break;
-    case asterius::ActionType::DIV:
         break;
     case asterius::ActionType::INT:
     {
@@ -79,8 +80,6 @@ void Parser::generate(RPN& rpn, const Token& token)
         else
             rpn.createVariable(var);
     }
-        break;
-    case asterius::ActionType::MULT:
         break;
     case asterius::ActionType::BYTE:
         break;
@@ -281,19 +280,19 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::INT_CONST }, 
-                { ActionType::INT_CONST }
+                { ActionType::ASS_INT_CONST }
             },
             { 
                 { ElementType::DOUBLE_CONST },
-                { ActionType::DOUBLE_CONST } 
+                { ActionType::ASS_DOUBLE_CONST } 
             },
             { 
                 { ElementType::BYTE_CONST }, 
-                { ActionType::BYTE_CONST } 
+                { ActionType::ASS_BYTE_CONST } 
             },
             { 
                 { ElementType::STRING_CONST },
-                { ActionType::STRING_CONST }
+                { ActionType::ASS_STRING_CONST }
             },
             { 
                 { ElementType::ARRAY, ElementType::OF, ElementType::INT_CONST, ElementType::ZARR },
@@ -301,7 +300,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                { ActionType::ZERO_CONST } 
+                {} 
             }
         })
     );
@@ -498,28 +497,28 @@ Parser::Parser(Lexer&& lexer)
         ElementType::COMP_EXPR,
         std::vector<TransitionRule>({
             { 
-                { ElementType::LESS, ElementType::LEXPR }, 
-                { ActionType::EMPTY, ActionType::LESS }
+                { ElementType::LESS, ElementType::LEXPR, ElementType::Z }, 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::LESS }
             },
             { 
-                { ElementType::GREATER, ElementType::LEXPR }, 
-                { ActionType::EMPTY, ActionType::GREATER }
+                { ElementType::GREATER, ElementType::LEXPR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::GREATER }
             },
             { 
-                { ElementType::EQ, ElementType::LEXPR },
-                { ActionType::EMPTY, ActionType::EQ }
+                { ElementType::EQ, ElementType::LEXPR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EQ }
             },
             { 
-                { ElementType::NEQ, ElementType::LEXPR }, 
-                { ActionType::EMPTY, ActionType::NEQ }
+                { ElementType::NEQ, ElementType::LEXPR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NEQ }
             },
             { 
-                { ElementType::GEQ, ElementType::LEXPR }, 
-                { ActionType::EMPTY, ActionType::GEQ }
+                { ElementType::GEQ, ElementType::LEXPR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::GEQ }
             },
             { 
-                { ElementType::LEQ, ElementType::LEXPR }, 
-                { ActionType::EMPTY, ActionType::LEQ }
+                { ElementType::LEQ, ElementType::LEXPR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::LEQ }
             },
             {
                 { ElementType::EMPTY },
