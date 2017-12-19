@@ -41,9 +41,15 @@ RPN Parser::analyze()
 	while (!actionsStack_.empty()) {
 		generate(rpn, token);
 		auto topElement = elementsStack_.back();
-		elementsStack_.pop_back();
-		actionsStack_.pop_back();
-		transit(topElement, token);
+		if (!isTerminal(topElement)) {
+			elementsStack_.pop_back();
+			actionsStack_.pop_back();
+			transit(topElement, token);
+		}
+		else {
+			elementsStack_.pop_back(); //some match!
+			actionsStack_.pop_back();
+		}
 	}
     return rpn;
 }
