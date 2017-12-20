@@ -108,6 +108,96 @@ public:
 	void execute(RPN& rpn) override;
 };
 
+class NegateCommand : public Command
+{
+public:
+	NegateCommand();
+	void execute(RPN& rpn) override;
+};
+
+class JumpCommand : public Command
+{
+public:
+	JumpCommand();
+	void execute(RPN& rpn) override;
+};
+
+class JumpIfNotCommand : public Command
+{
+public:
+	JumpIfNotCommand();
+	void execute(RPN& rpn) override;
+};
+
+class EqualCommand : public Command
+{
+public:
+	EqualCommand();
+	void execute(RPN& rpn) override;
+};
+
+class NotEqualCommand : public Command
+{
+public:
+	NotEqualCommand();
+	void execute(RPN& rpn) override;
+};
+
+class LessCommand : public Command
+{
+public:
+	LessCommand();
+	void execute(RPN& rpn) override;
+};
+
+class GreaterCommand : public Command
+{
+public:
+	GreaterCommand();
+	void execute(RPN& rpn) override;
+};
+
+class LessOrEqualCommand : public Command
+{
+public:
+	LessOrEqualCommand();
+	void execute(RPN& rpn) override;
+};
+
+class GreaterOrEqualCommand : public Command
+{
+public:
+	GreaterOrEqualCommand();
+	void execute(RPN& rpn) override;
+};
+
+class AndCommand : public Command
+{
+public:
+	AndCommand();
+	void execute(RPN& rpn) override;
+};
+
+class OrCommand : public Command
+{
+public:
+	OrCommand();
+	void execute(RPN& rpn) override;
+};
+
+class NotCommand : public Command
+{
+public:
+	NotCommand();
+	void execute(RPN& rpn) override;
+};
+
+class AssignCommand : public Command
+{
+public:
+	AssignCommand();
+	void execute(RPN& rpn) override;
+};
 
 //HELPER FUNCTIONS
 template<class value_type>
@@ -115,6 +205,9 @@ value_type get_val(void* ptr);
 
 template<class operation>
 void perform(RPN& rpn, operation op);
+
+template<class operation>
+void performCompare(RPN& rpn, operation op);
 
 }
 
