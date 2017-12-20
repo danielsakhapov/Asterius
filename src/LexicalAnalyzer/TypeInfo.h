@@ -6,7 +6,7 @@
 namespace asterius
 {
 
-#define CHAR_SIZE 1
+#define BYTE_SIZE 1
 #define INT_SIZE 4
 #define FLOAT_SIZE 8
 #define INDEX_OF_FIRST_TERMINAL 35

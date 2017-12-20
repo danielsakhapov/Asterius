@@ -1,4 +1,5 @@
 #include "RPN.h"
+#include <functional>
 
 namespace asterius
 {
@@ -165,7 +166,8 @@ AddCommand::AddCommand()
 
 void AddCommand::execute(RPN& rpn)
 {
-	auto rightVariable = rpn.getNextOperand();
+	perform(rpn, std::plus<void>());
+	/*auto rightVariable = rpn.getNextOperand();
 	auto leftVariable = rpn.getNextOperand();
 
 	void* leftData = rpn.getOperandData(leftVariable);
@@ -276,7 +278,7 @@ void AddCommand::execute(RPN& rpn)
 	break;
 	default:
 		break;
-	}
+	}*/
 
 }
 
@@ -289,7 +291,8 @@ SubtractCommand::SubtractCommand()
 
 void SubtractCommand::execute(RPN& rpn)
 {
-	auto rightVariable = rpn.getNextOperand();
+	perform(rpn, std::minus<void>());
+	/*auto rightVariable = rpn.getNextOperand();
 	auto leftVariable = rpn.getNextOperand();
 
 	void* leftData = rpn.getOperandData(leftVariable);
@@ -400,7 +403,7 @@ void SubtractCommand::execute(RPN& rpn)
 	break;
 	default:
 		break;
-	}
+	}*/
 }
 
 // MultiplyCommand class
@@ -412,7 +415,8 @@ MultiplyCommand::MultiplyCommand()
 
 void MultiplyCommand::execute(RPN& rpn)
 {
-	auto rightVariable = rpn.getNextOperand();
+	perform(rpn, std::multiplies<void>());
+	/*auto rightVariable = rpn.getNextOperand();
 	auto leftVariable = rpn.getNextOperand();
 
 	void* leftData = rpn.getOperandData(leftVariable);
@@ -523,7 +527,7 @@ void MultiplyCommand::execute(RPN& rpn)
 	break;
 	default:
 		break;
-	}
+	}*/
 }
 
 // DivideCommand class
@@ -535,7 +539,8 @@ DivideCommand::DivideCommand()
 
 void DivideCommand::execute(RPN& rpn)
 {
-	auto rightVariable = rpn.getNextOperand();
+	perform(rpn, std::divides<void>());
+	/*auto rightVariable = rpn.getNextOperand();
 	auto leftVariable = rpn.getNextOperand();
 
 	void* leftData = rpn.getOperandData(leftVariable);
@@ -636,6 +641,118 @@ void DivideCommand::execute(RPN& rpn)
 			char rightByte = *(char*)rightData;
 			char res = leftByte / rightByte;
 			Variable result(DataType::BYTE, 1);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		default:
+			break;
+		}
+	}
+	break;
+	default:
+		break;
+	}*/
+}
+
+template<class value_type>
+value_type get_val(void* ptr)
+{
+	return *static_cast<value_type*>(ptr);
+}
+
+template<class operation>
+void perform(RPN& rpn, operation op)
+{
+	auto rightVariable = rpn.getNextOperand();
+	auto leftVariable = rpn.getNextOperand();
+
+	void* leftData = rpn.getOperandData(leftVariable);
+	void* rightData = rpn.getOperandData(rightVariable);
+	switch (leftVariable.type())
+	{
+	case DataType::INT:
+	{
+		switch (rightVariable.type())
+		{
+		case DataType::INT:
+		{
+			int res = op(get_val<int>(leftData), get_val<int>(rightData));
+			Variable result(DataType::INT, INT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		case DataType::FLOAT:
+		{
+			double res = op(get_val<int>(leftData), get_val<double>(rightData));
+			Variable result(DataType::FLOAT, FLOAT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		case DataType::BYTE:
+		{
+			int res = op(get_val<int>(leftData), get_val<char>(rightData));
+			Variable result(DataType::INT, INT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		default:
+			break;
+		}
+	}
+	break;
+	case DataType::FLOAT:
+	{
+		switch (rightVariable.type())
+		{
+		case DataType::INT:
+		{
+			double res = op(get_val<double>(leftData), get_val<int>(rightData));
+			Variable result(DataType::FLOAT, FLOAT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		case DataType::FLOAT:
+		{
+			double res = op(get_val<double>(leftData), get_val<double>(rightData));
+			Variable result(DataType::FLOAT, FLOAT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		case DataType::BYTE:
+		{
+			double res = op(get_val<double>(leftData), get_val<char>(rightData));
+			Variable result(DataType::FLOAT, FLOAT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		default:
+			break;
+		}
+	}
+	break;
+	case DataType::BYTE:
+	{
+		int leftByte = *(char*)leftData;
+		switch (rightVariable.type())
+		{
+		case DataType::INT:
+		{
+			int res = op(get_val<char>(leftData), get_val<int>(rightData));
+			Variable result(DataType::INT, INT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		case DataType::FLOAT:
+		{
+			double res = op(get_val<char>(leftData), get_val<double>(rightData));
+			Variable result(DataType::FLOAT, FLOAT_SIZE);
+			rpn.createOperand(result, &res);
+		}
+		break;
+		case DataType::BYTE:
+		{
+			char res = op(get_val<char>(leftData), get_val<char>(rightData));
+			Variable result(DataType::BYTE, BYTE_SIZE);
 			rpn.createOperand(result, &res);
 		}
 		break;

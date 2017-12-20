@@ -103,6 +103,7 @@ void Parser::generate(RPN& rpn, const Token& token)
 		rpn.addCommand(std::make_unique<AddCommand>());
         break;
     case asterius::ActionType::MINUS:
+		rpn.addCommand(std::make_unique<SubtractCommand>());
         break;
     case asterius::ActionType::ARRAY:
         break;
@@ -124,6 +125,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::IF_END:
         break;
     case asterius::ActionType::PRODUCT:
+		rpn.addCommand(std::make_unique<MultiplyCommand>());
         break;
     case asterius::ActionType::GREATER:
         break;
@@ -132,6 +134,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::ELSE_END:
         break;
     case asterius::ActionType::DIVISION:
+		rpn.addCommand(std::make_unique<DivideCommand>());
         break;
     case asterius::ActionType::BLOCK_END:
         symbol_table_.pop();
@@ -204,7 +207,6 @@ bool Parser::isTerminal(ElementType elementType) const noexcept
 Parser::Parser(Lexer&& lexer)
     : lexer_(std::move(lexer))
 {
-    //locals_.push({});
     elementsStack_.push_back(ElementType::FUNC);
     actionsStack_.push_back(ActionType::EMPTY);
 
@@ -412,7 +414,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {}
+                {  }
             } 
         })
     );
@@ -742,7 +744,7 @@ Parser::Parser(Lexer&& lexer)
             { 
                 { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR }, 
                 { ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY }
-            },
+            },              //NAME
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR },
                 { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY } 
@@ -770,11 +772,11 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::PRODUCT, ElementType::FACTOR, ElementType::MULT_EXPR }, 
-                { ActionType::EMPTY, ActionType::PRODUCT, ActionType::EMPTY } 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::PRODUCT }
             },
             { 
                 { ElementType::DIVISION, ElementType::FACTOR, ElementType::MULT_EXPR }, 
-                { ActionType::EMPTY, ActionType::DIVISION, ActionType::EMPTY } 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::DIVISION }
             },
             { 
                 { ElementType::EMPTY },
@@ -791,8 +793,8 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::NAME, ElementType::DESC }, 
-                { ActionType::NAME, ActionType::EMPTY } 
-            },
+                { ActionType::VAR, ActionType::EMPTY } 
+            },              //NAME
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::Z }, 
                 { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY }

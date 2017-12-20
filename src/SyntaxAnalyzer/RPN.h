@@ -108,6 +108,14 @@ public:
 	void execute(RPN& rpn) override;
 };
 
+
+//HELPER FUNCTIONS
+template<class value_type>
+value_type get_val(void* ptr);
+
+template<class operation>
+void perform(RPN& rpn, operation op);
+
 }
 
 #endif
