@@ -52,8 +52,6 @@ RPN Parser::analyze()
     return rpn;
 }
 
-
-
 void Parser::generate(RPN& rpn, const Token& token)
 {
     switch (actionsStack_.back())
