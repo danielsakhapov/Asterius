@@ -22,14 +22,13 @@ RPN Parser::analyze()
                 throw std::logic_error("invalid syntax near: " + to_string(token.getPosition()));
             auto topElement = elementsStack_.back();
             generate(rpn, token);
+            elementsStack_.pop_back();
+            actionsStack_.pop_back();
             if (!isTerminal(topElement)) {
-                elementsStack_.pop_back();
-                actionsStack_.pop_back();
                 transit(topElement, token);
             }
             else {
-                elementsStack_.pop_back(); //some match!
-                actionsStack_.pop_back();
+                match(token, topElement);
                 token = lexer_.getNextToken();
             }
         }
@@ -41,17 +40,24 @@ RPN Parser::analyze()
 	while (!actionsStack_.empty()) {
 		generate(rpn, token);
 		auto topElement = elementsStack_.back();
+		elementsStack_.pop_back();
+		actionsStack_.pop_back();
 		if (!isTerminal(topElement)) {
-			elementsStack_.pop_back();
-			actionsStack_.pop_back();
 			transit(topElement, token);
 		}
-		else {
-			elementsStack_.pop_back(); //some match!
-			actionsStack_.pop_back();
-		}
+        else {
+            match(token, topElement);
+        }
 	}
     return rpn;
+}
+
+
+
+void Parser::match(const Token& token, ElementType elementType)
+{
+    if (token.getType() != elementType)
+        throw std::logic_error("unexpected symbol " + token.getName() + " at: " + to_string(token.getPosition()));
 }
 
 

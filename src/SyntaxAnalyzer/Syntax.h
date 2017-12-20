@@ -33,6 +33,7 @@ private:
     //temp variables
     std::string name_;
 
+    void match(const Token& token, ElementType elementType);
     void transit(ElementType elementType, const Token& token);
     bool isTerminal(ElementType elementType) const noexcept;
     template <typename E>
