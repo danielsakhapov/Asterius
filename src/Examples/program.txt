@@ -1,10 +1,11 @@
 fn main()
 {
-    let a be int;
-    let b be int;
+    let a be double;
+	let b be double;
 	read(a);
 	read(b);
-	write(a / b);
+	write((a + a) * a);
+	write(a * a / b);
     //if (a less b) {
     //    write(a);
     //}

@@ -28,7 +28,7 @@ public:
 	void createVariable(const Variable& variable); //allocates variable on stack
 	void* getOperandData(const Variable& variable) const noexcept;
 	Variable getNextOperand();
-	void setCommand(size_t position);
+	void setCommand(size_t position) noexcept;
 	void print() const;
 	void execute();
 private:

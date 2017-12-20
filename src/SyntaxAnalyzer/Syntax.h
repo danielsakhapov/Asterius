@@ -34,6 +34,7 @@ private:
     std::string name_;
 
     void transit(ElementType elementType, const Token& token);
+	void match(ElementType, const Token& token) const;
     bool isTerminal(ElementType elementType) const noexcept;
     template <typename E>
     constexpr auto toUnderlying(E e) const noexcept;

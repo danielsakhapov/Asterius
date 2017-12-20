@@ -50,7 +50,7 @@ Variable RPN::getNextOperand()
 	return variable;
 }
 
-void RPN::setCommand(size_t position)
+void RPN::setCommand(size_t position) noexcept
 {
 	assert(position < commands_.size());
 	next_ = position;

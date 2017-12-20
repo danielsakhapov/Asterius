@@ -22,14 +22,13 @@ RPN Parser::analyze()
                 throw std::logic_error("invalid syntax near: " + to_string(token.getPosition()));
             auto topElement = elementsStack_.back();
             generate(rpn, token);
+            elementsStack_.pop_back();
+            actionsStack_.pop_back();
             if (!isTerminal(topElement)) {
-                elementsStack_.pop_back();
-                actionsStack_.pop_back();
                 transit(topElement, token);
             }
             else {
-                elementsStack_.pop_back(); //some match!
-                actionsStack_.pop_back();
+				match(topElement, token);
                 token = lexer_.getNextToken();
             }
         }
@@ -39,16 +38,15 @@ RPN Parser::analyze()
         }
     }
 	while (!actionsStack_.empty()) {
-		generate(rpn, token);
 		auto topElement = elementsStack_.back();
+		generate(rpn, token);
+		elementsStack_.pop_back();
+		actionsStack_.pop_back();
 		if (!isTerminal(topElement)) {
-			elementsStack_.pop_back();
-			actionsStack_.pop_back();
 			transit(topElement, token);
 		}
 		else {
-			elementsStack_.pop_back(); //some match!
-			actionsStack_.pop_back();
+			match(topElement, token);
 		}
 	}
     return rpn;
@@ -61,21 +59,28 @@ void Parser::generate(RPN& rpn, const Token& token)
     switch (actionsStack_.back())
     {
     case asterius::ActionType::OR:
+		rpn.addCommand(std::make_unique<OrCommand>());
         break;
     case asterius::ActionType::EQ:
+		rpn.addCommand(std::make_unique<EqualCommand>());
         break;
     case asterius::ActionType::LEQ:
+		rpn.addCommand(std::make_unique<LessOrEqualCommand>());
         break;
     case asterius::ActionType::GEQ:
+		rpn.addCommand(std::make_unique<GreaterOrEqualCommand>());
         break;
     case asterius::ActionType::NEQ:
+		rpn.addCommand(std::make_unique<NotEqualCommand>());
         break;
     case asterius::ActionType::VAR:
-        rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(token.getName()), token.getName()));
+        rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(name_), name_));
         break;
     case asterius::ActionType::AND:
+		rpn.addCommand(std::make_unique<AndCommand>());
         break;
     case asterius::ActionType::NOT:
+		rpn.addCommand(std::make_unique<NegateCommand>());
         break;
     case asterius::ActionType::INT:
     {
@@ -88,6 +93,14 @@ void Parser::generate(RPN& rpn, const Token& token)
     }
         break;
     case asterius::ActionType::BYTE:
+	{
+		Variable var(DataType::BYTE, BYTE_SIZE, token.getPosition());
+		symbol_table_.insert(name_, var);
+		if (var.isRelative())
+			rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
+		else
+			rpn.createVariable(var);
+	}
         break;
     case asterius::ActionType::NAME:
         name_ = token.getName();
@@ -98,6 +111,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         rpn.addCommand(std::make_unique<ReadCommand>());
         break;
     case asterius::ActionType::LESS:
+		rpn.addCommand(std::make_unique<LessCommand>());
         break;
     case asterius::ActionType::PLUS:
 		rpn.addCommand(std::make_unique<AddCommand>());
@@ -115,12 +129,22 @@ void Parser::generate(RPN& rpn, const Token& token)
         rpn.addCommand(std::make_unique<WriteCommand>());
         break;
     case asterius::ActionType::UMINUS:
+		rpn.addCommand(std::make_unique<NegateCommand>());
         break;
     case asterius::ActionType::ASSIGN:
+		rpn.addCommand(std::make_unique<AssignCommand>());
         break;
     case asterius::ActionType::STRING:
         break;
     case asterius::ActionType::DOUBLE:
+	{
+		Variable var(DataType::FLOAT, FLOAT_SIZE, token.getPosition());
+		symbol_table_.insert(name_, var);
+		if (var.isRelative())
+			rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
+		else
+			rpn.createVariable(var);
+	}
         break;
     case asterius::ActionType::IF_END:
         break;
@@ -128,6 +152,7 @@ void Parser::generate(RPN& rpn, const Token& token)
 		rpn.addCommand(std::make_unique<MultiplyCommand>());
         break;
     case asterius::ActionType::GREATER:
+		rpn.addCommand(std::make_unique<GreaterCommand>());
         break;
     case asterius::ActionType::IF_BEGIN:
         break;
@@ -179,10 +204,9 @@ void Parser::generate(RPN& rpn, const Token& token)
     }
 }
 
-
-
 void Parser::transit(ElementType elementType, const Token& token)
 {
+	if (elementType == ElementType::EMPTY) return;
     const auto& rules = table_.at(elementType);
     for (const auto& it: rules) {
         if (token.getType() == it.elements_[0]) {
@@ -191,11 +215,20 @@ void Parser::transit(ElementType elementType, const Token& token)
             return;
         }
     }
-    if (!(rules.back().elements_[0] == ElementType::EMPTY))
-        throw std::logic_error("wow! l00kz like 1'm c0nfuzzzed");
+	if ((rules.back().elements_[0] == ElementType::EMPTY)) {
+		std::copy(rules.back().elements_.crbegin(), rules.back().elements_.crend(), std::back_inserter(elementsStack_));
+		std::copy(rules.back().acts_.crbegin(), rules.back().acts_.crend(), std::back_inserter(actionsStack_));
+	}
+	else {
+		throw std::logic_error("invalid syntax");
+	}
 }
 
-
+void Parser::match(ElementType elementType, const Token& token) const
+{
+	if (elementType != token.getType())
+		throw std::logic_error("invalid syntax near" + to_string(token.getPosition()));
+}
 
 bool Parser::isTerminal(ElementType elementType) const noexcept
 {
@@ -245,7 +278,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -258,7 +291,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -329,7 +362,7 @@ Parser::Parser(Lexer&& lexer)
             },          
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             }
         })
     );
@@ -355,7 +388,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::READ, ElementType::OPEN_BRACKET, ElementType::NAME, ElementType::DESC, ElementType::CLOSE_BRACKET, ElementType::STATEMENT_END, ElementType::STATEMENT }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY, ActionType::READ, ActionType::EMPTY }
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::READ, ActionType::EMPTY }
             },
             { 
                 { ElementType::WRITE, ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::STATEMENT_END, ElementType::STATEMENT }, 
@@ -363,7 +396,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::NAME, ElementType::DESC, ElementType::ASS, ElementType::STATEMENT_END, ElementType::STATEMENT },
-                { ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
                 { ElementType::LET, ElementType::NAME, ElementType::BE, ElementType::TYPEDEF, ElementType::VALUE, ElementType::STATEMENT_END, ElementType::STATEMENT },
@@ -371,7 +404,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {}
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -384,7 +417,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             }
         })
     );
@@ -397,7 +430,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -414,7 +447,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {  }
+                { ActionType::VAR }
             } 
         })
     );
@@ -427,7 +460,7 @@ Parser::Parser(Lexer&& lexer)
             },
             {
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -436,11 +469,11 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR, ElementType::NEXT_PARAM },
-                { ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR, ElementType::NEXT_PARAM },
-                { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
                 { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR, ElementType::NEXT_PARAM },
@@ -468,7 +501,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {}
+                { ActionType::EMPTY }
             }
         })
     );
@@ -481,7 +514,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -490,11 +523,11 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
             },
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
                 { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
@@ -551,7 +584,7 @@ Parser::Parser(Lexer&& lexer)
             },
             {
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -564,7 +597,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
                 { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
@@ -601,7 +634,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -634,7 +667,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -647,7 +680,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -680,7 +713,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -713,7 +746,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -730,7 +763,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {}
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -743,11 +776,11 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR }, 
-                { ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY }
-            },              //NAME
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY }
+            },
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR },
-                { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY } 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS }
             },
             { 
                 { ElementType::INT_CONST, ElementType::MULT_EXPR }, 
@@ -763,7 +796,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY } 
             } 
         })
     );
@@ -780,7 +813,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {}
+                { ActionType::EMPTY }
             }
         })
     );
@@ -793,11 +826,11 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::NAME, ElementType::DESC }, 
-                { ActionType::VAR, ActionType::EMPTY } 
-            },              //NAME
+                { ActionType::NAME, ActionType::EMPTY }
+            },
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::Z }, 
-                { ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY }
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS }
             },
             { 
                 { ElementType::INT_CONST }, 
@@ -813,7 +846,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             }
         })
     );
@@ -847,7 +880,7 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
@@ -860,7 +893,7 @@ Parser::Parser(Lexer&& lexer)
             },
             { 
                 { ElementType::EMPTY },
-                {} 
+                { ActionType::EMPTY }
             } 
         })
     );
