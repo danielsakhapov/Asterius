@@ -23,6 +23,7 @@ class RPN
 {
 public:
 	void addCommand(std::unique_ptr<Command> cmd);
+	void addCommand(std::unique_ptr<Command> cmd, size_t position);
 	void addOperand(const Variable& variable); //add existing variable to operands
 	void createOperand(Variable& variable, void* src); // create temp variable and add to operands
 	void createVariable(const Variable& variable); //allocates variable on stack
@@ -30,6 +31,7 @@ public:
 	Variable getNextOperand();
 	void setCommand(size_t position) noexcept;
 	void print() const;
+	size_t getSize();
 	void execute();
 private:
 	Stack<12800> stack_; //stack to hold data

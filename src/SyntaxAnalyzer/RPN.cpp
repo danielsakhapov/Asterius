@@ -9,6 +9,18 @@ void RPN::addCommand(std::unique_ptr<Command> cmd)
 	commands_.emplace_back(std::move(cmd));
 }
 
+void RPN::addCommand(std::unique_ptr<Command> cmd, size_t position)
+{
+	if (commands_[position])
+		commands_[position].release();
+	commands_.emplace(commands_.begin() + position, std::move(cmd));
+}
+
+size_t RPN::getSize()
+{
+	return commands_.size();
+}
+
 void RPN::execute()
 {
 	auto sz = commands_.size();
@@ -500,7 +512,7 @@ void AssignCommand::execute(RPN& rpn)
 template<class value_type>
 value_type get_val(void* ptr)
 {
-	return *static_cast<value_type*>(ptr); //возвращает значение определенного типа, static_cast - преобразует выражения одного статического типа в объекты и значения другого статического типа.
+	return *static_cast<value_type*>(ptr); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, static_cast - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.
 }
 
 template<class operation>
@@ -519,7 +531,7 @@ void perform(RPN& rpn, operation op)
 		{
 		case DataType::INT:
 		{
-			int res = op(get_val<int>(leftData), get_val<int>(rightData)); //вызов нужной операции
+			int res = op(get_val<int>(leftData), get_val<int>(rightData)); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			Variable result(DataType::INT, INT_SIZE);
 			rpn.createOperand(result, &res);
 		}
@@ -625,7 +637,7 @@ void performCompare(RPN& rpn, operation op)
 		{
 		case DataType::INT:
 		{
-			char res = op(get_val<int>(leftData), get_val<int>(rightData)) ? 1 : 0; //вызов нужной операции, op - это указатель на нужную функцию
+			char res = op(get_val<int>(leftData), get_val<int>(rightData)) ? 1 : 0; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, op - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			Variable result(DataType::BYTE, BYTE_SIZE);
 			rpn.createOperand(result, &res);
 		}

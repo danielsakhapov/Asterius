@@ -28,7 +28,7 @@ RPN Parser::analyze()
                 transit(topElement, token);
             }
             else {
-				match(topElement, token);
+                match(topElement, token);
                 token = lexer_.getNextToken();
             }
         }
@@ -145,6 +145,8 @@ void Parser::generate(RPN& rpn, const Token& token)
 	}
         break;
     case asterius::ActionType::IF_END:
+	commands_.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), labelsStack_.top()));
+	labelsStack_.pop();
         break;
     case asterius::ActionType::PRODUCT:
 		rpn.addCommand(std::make_unique<MultiplyCommand>());
@@ -192,6 +194,9 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::FUNCTION_CALL:
         break;
     case asterius::ActionType::CONDITION_END:
+        labelsStack_.push(rpn.getSize());
+        rpn.addCommand(nullptr);
+	rpn.addCommand(std::make_unique<JumpIfNotCommand>());
         break;
     case asterius::ActionType::CONDITION_BEGIN:
         break;
@@ -222,10 +227,10 @@ void Parser::transit(ElementType elementType, const Token& token)
 	}
 }
 
-void Parser::match(ElementType elementType, const Token& token) const
+void Parser::match(const Token& token, ElementType elementType) const
 {
 	if (elementType != token.getType())
-		throw std::logic_error("invalid syntax near" + to_string(token.getPosition()));
+		throw std::logic_error("unexpected symbol " + token.getName() + " at " + to_string(token.getPosition()));
 }
 
 bool Parser::isTerminal(ElementType elementType) const noexcept

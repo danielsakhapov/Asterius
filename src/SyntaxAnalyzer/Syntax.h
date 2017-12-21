@@ -24,7 +24,7 @@ public:
     void generate(RPN& rpn, const Token&);
 private:
     Lexer lexer_;
-    std::stack<std::size_t> labelsStack_;
+    std::stack<int> labelsStack_;
     std::deque<ActionType> actionsStack_;
     std::deque<ElementType> elementsStack_;
     SymbolTable symbol_table_;
@@ -34,7 +34,7 @@ private:
     std::string name_;
 
     void transit(ElementType elementType, const Token& token);
-	void match(ElementType, const Token& token) const;
+	void match(const Token& token, ElementType) const;
     bool isTerminal(ElementType elementType) const noexcept;
     template <typename E>
     constexpr auto toUnderlying(E e) const noexcept;
