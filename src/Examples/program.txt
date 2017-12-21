@@ -4,10 +4,8 @@ fn main()
 	let b be int;
 	read(a);
 	read(b);
-    if (a less b) {
-        write(a);
-    }
-    else {
-        write(b);
-    }
+    while (a less b) {
+		write(a);
+		a set a + 1;
+	}
 }

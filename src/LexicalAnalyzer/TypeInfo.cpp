@@ -46,7 +46,7 @@ Variable::Variable(DataType type, size_t size, const Position& position) noexcep
     : type_(type),
     size_(size),
     position_(position),
-    isRelative_(false)
+    isRelative_(true)
 {
 }
 

@@ -50,8 +50,8 @@ void SymbolTable::pop()
 void SymbolTable::insert(const string& name, Variable& data)
 {
     assert(!tables_.empty());
-    if (tables_.size() > 1) // level 0 for globes
-        data.setRelative(true);
+    if (tables_.size() == 1) // level 0 for globes
+        data.setRelative(false);
     return tables_.back().insert(name, data);
 }
 
