@@ -28,7 +28,7 @@ RPN Parser::analyze()
                 transit(topElement, token);
             }
             else {
-                match(topElement, token);
+                match(token, topElement);
                 token = lexer_.getNextToken();
             }
         }
@@ -46,7 +46,7 @@ RPN Parser::analyze()
 			transit(topElement, token);
 		}
 		else {
-			match(topElement, token);
+			match(token, topElement);
 		}
 	}
     return rpn;
@@ -145,8 +145,7 @@ void Parser::generate(RPN& rpn, const Token& token)
 	}
         break;
     case asterius::ActionType::IF_END:
-	commands_.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), labelsStack_.top()));
-	labelsStack_.pop();
+	rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize()), labelsStack_.top());	
         break;
     case asterius::ActionType::PRODUCT:
 		rpn.addCommand(std::make_unique<MultiplyCommand>());
@@ -157,6 +156,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::IF_BEGIN:
         break;
     case asterius::ActionType::ELSE_END:
+        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize()), labelsStack_.top());
         break;
     case asterius::ActionType::DIVISION:
 		rpn.addCommand(std::make_unique<DivideCommand>());
@@ -170,8 +170,17 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::FN_CREATE:
         break;
     case asterius::ActionType::WHILE_END:
+        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() + 2), labelsStack_.top());
+	labelsStack_.pop();
+	rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), labelsStack_.top()));
+	rpn.addCommand(std::make_unique<JumpCommand>());
         break;
     case asterius::ActionType::ELSE_START:
+        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() + 2), labelsStack_.top());
+	labelsStack_.pop();
+	labelsStack_.push(rpn.getSize());
+	rpn.addCommand(nullptr);
+	rpn.addCommand(std::make_unique<JumpCommand>());
         break;
     case asterius::ActionType::VAR_CREATE:
         break;
@@ -183,6 +192,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::PARAMS_END:
         break;
     case asterius::ActionType::WHILE_BEGIN:
+	labelsStack_.push(rpn.getSize());
         break;
     case asterius::ActionType::BLOCK_BEGIN:
         symbol_table_.push();
