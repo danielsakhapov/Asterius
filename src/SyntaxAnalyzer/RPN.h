@@ -31,6 +31,8 @@ public:
 	void setCommand(size_t position) noexcept;
 	void print() const;
 	void execute();
+	void beginBlock();
+	void endBlock();
 private:
 	Stack<12800> stack_; //stack to hold data
 	std::vector<std::unique_ptr<Command> > commands_; //RPN
@@ -196,6 +198,20 @@ class AssignCommand : public Command
 {
 public:
 	AssignCommand();
+	void execute(RPN& rpn) override;
+};
+
+class BeginBlockCommand : public Command
+{
+public:
+	BeginBlockCommand();
+	void execute(RPN& rpn) override;
+};
+
+class EndBlockCommand : public Command
+{
+public:
+	EndBlockCommand();
 	void execute(RPN& rpn) override;
 };
 

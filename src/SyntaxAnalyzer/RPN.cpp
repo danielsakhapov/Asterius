@@ -17,6 +17,16 @@ void RPN::execute()
 	}
 }
 
+void RPN::beginBlock()
+{
+	stack_.push();
+}
+
+void RPN::endBlock()
+{
+	stack_.pop();
+}
+
 void RPN::addOperand(const Variable& variable)
 {
 	// add existing variable to operands
@@ -496,6 +506,27 @@ void AssignCommand::execute(RPN& rpn)
 	}
 }
 
+// BeginBlockCommand
+BeginBlockCommand::BeginBlockCommand()
+	:Command("begin block")
+{
+}
+
+void BeginBlockCommand::execute(RPN& rpn)
+{
+	rpn.beginBlock();
+}
+
+// EndBlockCommand
+EndBlockCommand::EndBlockCommand()
+	:Command("end block")
+{
+}
+
+void EndBlockCommand::execute(RPN& rpn)
+{
+	rpn.endBlock();
+}
 
 template<class value_type>
 value_type get_val(void* ptr)
