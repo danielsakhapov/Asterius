@@ -416,14 +416,20 @@ void AssignCommand::execute(RPN& rpn)
 		{
 		case DataType::INT:
 		{
+			int rightValue = get_val<int>(rightData);
+			*(int*)leftData = rightValue;
 			break;
 		}
 		case DataType::FLOAT:
 		{
+			double rightValue = get_val<double>(rightData);
+			*(int*)leftData = rightValue;
 			break;
 		}
 		case DataType::BYTE:
 		{
+			char rightValue = get_val<char>(rightData);
+			*(int*)leftData = rightValue;
 			break;
 		}
 		default:
@@ -437,14 +443,20 @@ void AssignCommand::execute(RPN& rpn)
 		{
 		case DataType::INT:
 		{
+			int rightValue = get_val<int>(rightData);
+			*(double*)leftData = rightValue;
 			break;
 		}
 		case DataType::FLOAT:
 		{
+			double rightValue = get_val<double>(rightData);
+			*(double*)leftData = rightValue;
 			break;
 		}
 		case DataType::BYTE:
 		{
+			char rightValue = get_val<char>(rightData);
+			*(double*)leftData = rightValue;
 			break;
 		}
 		default:
@@ -458,14 +470,20 @@ void AssignCommand::execute(RPN& rpn)
 		{
 		case DataType::INT:
 		{
+			int rightValue = get_val<int>(rightData);
+			*(char*)leftData = rightValue;
 			break;
 		}
 		case DataType::FLOAT:
 		{
+			double rightValue = get_val<double>(rightData);
+			*(char*)leftData = rightValue;
 			break;
 		}
 		case DataType::BYTE:
 		{
+			char rightValue = get_val<char>(rightData);
+			*(char*)leftData = rightValue;
 			break;
 		}
 		default:
