@@ -79,5 +79,8 @@
     <Text Include="src\Examples\program1.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="src\Examples\err.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

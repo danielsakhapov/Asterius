@@ -1,0 +1,13 @@
+fn main()
+{
+	let a be int;
+	let b be int;
+	read(a);
+	read(b);
+    while (a less b) {
+		if (a less 7) {
+		    write(a);
+		}
+		a set a + 1;
+	}
+}

@@ -136,6 +136,7 @@
     <ClInclude Include="src\SyntaxAnalyzer\SyntaxStructures.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="src\Examples\err.txt" />
     <Text Include="src\Examples\program.txt" />
     <Text Include="src\Examples\program1.txt" />
   </ItemGroup>
