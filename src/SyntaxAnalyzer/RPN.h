@@ -26,8 +26,7 @@ public:
 	void addOperand(const Variable& variable); //add existing variable to operands
 	void createOperand(Variable& variable, void* src); // create temp variable and add to operands
 	void createVariable(const Variable& variable); //allocates variable on stack
-	void* getOperandData(const Variable& variable) const noexcept;
-	Variable getNextOperand();
+	std::pair<Variable, void*> getNextOperand();
 	void setCommand(size_t position) noexcept;
 	void print() const;
 	void execute();
