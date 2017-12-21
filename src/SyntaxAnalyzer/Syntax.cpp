@@ -82,7 +82,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         break;
     case asterius::ActionType::INT:
     {
-        Variable var(DataType::INT, INT_SIZE, token.getPosition());
+		auto var = make_variable<int>(token.getPosition());
         symbol_table_.insert(name_, var);
         if (var.isRelative())
             rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
@@ -92,7 +92,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         break;
     case asterius::ActionType::BYTE:
 	{
-		Variable var(DataType::BYTE, BYTE_SIZE, token.getPosition());
+		auto var = make_variable<char>(token.getPosition());
 		symbol_table_.insert(name_, var);
 		if (var.isRelative())
 			rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
@@ -136,7 +136,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         break;
     case asterius::ActionType::DOUBLE:
 	{
-		Variable var(DataType::FLOAT, FLOAT_SIZE, token.getPosition());
+		auto var = make_variable<double>(token.getPosition());
 		symbol_table_.insert(name_, var);
 		if (var.isRelative())
 			rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
@@ -163,6 +163,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         symbol_table_.pop();
         break;
     case asterius::ActionType::INT_CONST:
+		rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), 123));
         break;
     case asterius::ActionType::FN_CREATE:
         break;
@@ -173,6 +174,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::VAR_CREATE:
         break;
     case asterius::ActionType::BYTE_CONST:
+		rpn.addCommand(std::make_unique<DataCommand<char> >(make_variable<char>(), 123));
         break;
     case asterius::ActionType::ZERO_CONST:
         break;
@@ -186,6 +188,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::PARAMS_BEGIN:
         break;
     case asterius::ActionType::DOUBLE_CONST:
+		rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), 123));
         break;
     case asterius::ActionType::STRING_CONST:
         break;
@@ -410,8 +413,8 @@ Parser::Parser(Lexer&& lexer)
         ElementType::ASS,
         std::vector<TransitionRule>({
             { 
-                { ElementType::ASSIGN, ElementType::EXPR },
-                { ActionType::EMPTY, ActionType::ASSIGN } 
+                { ElementType::ASSIGN, ElementType::EXPR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::ASSIGN } 
             },
             { 
                 { ElementType::EMPTY },

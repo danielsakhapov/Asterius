@@ -11,6 +11,27 @@ namespace asterius
 #define FLOAT_SIZE 8
 #define INDEX_OF_FIRST_TERMINAL 35
 
+template<class type>
+struct type_to_variable_size;
+
+template<>
+struct type_to_variable_size<char>
+{
+	static constexpr int value = BYTE_SIZE;
+};
+
+template<>
+struct type_to_variable_size<int>
+{
+	static constexpr int value = INT_SIZE;
+};
+
+template<>
+struct type_to_variable_size<double>
+{
+	static constexpr int value = FLOAT_SIZE;
+};
+
 enum class DataType
 {
     BYTE,
@@ -18,6 +39,27 @@ enum class DataType
     FLOAT,
     ARRAY,
     FUNCTION
+};
+
+template<class type>
+struct type_to_type;
+
+template<>
+struct type_to_type<char>
+{
+	static constexpr DataType value = DataType::BYTE;
+};
+
+template<>
+struct type_to_type<int>
+{
+	static constexpr DataType value = DataType::INT;
+};
+
+template<>
+struct type_to_type<double>
+{
+	static constexpr DataType value = DataType::FLOAT;
 };
 
 enum class ElementType
@@ -142,6 +184,12 @@ private:
     size_t size_; //can be carried through global table
     Position position_; //position in source file
 };
+
+template<class type>
+Variable make_variable(const Position& position = Position())
+{
+	return Variable(type_to_type<type>::value, type_to_variable_size<type>::value, position);
+}
 
 class Token
 {

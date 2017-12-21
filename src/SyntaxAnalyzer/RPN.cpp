@@ -211,22 +211,19 @@ void NegateCommand::execute(RPN& rpn)
 	case DataType::INT:
 	{
 		int res = -get_val<int>(data);
-		Variable result(DataType::INT, INT_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<int>(), &res);
 		break;
 	}
 	case DataType::FLOAT:
 	{
 		double res = -get_val<double>(data);
-		Variable result(DataType::FLOAT, FLOAT_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<double>(), &res);
 		break;
 	}
 	case DataType::BYTE:
 	{
 		char res = -get_val<char>(data);
-		Variable result(DataType::BYTE, BYTE_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<char>(), &res);
 		break;
 	}
 	}
@@ -344,14 +341,12 @@ void AndCommand::execute(RPN& rpn)
 	if (get_val<char>(leftData) && get_val<char>(rightData))
 	{
 		char res = 1;
-		Variable result(DataType::BYTE, BYTE_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<char>(), &res);
 	}
 	else
 	{
 		char res = 0;
-		Variable result(DataType::BYTE, BYTE_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<char>(), &res);
 	}
 }
 
@@ -370,14 +365,12 @@ void OrCommand::execute(RPN& rpn)
 	if (get_val<char>(leftData) || get_val<char>(rightData))
 	{
 		char res = 1;
-		Variable result(DataType::BYTE, BYTE_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<char>(), &res);
 	}
 	else
 	{
 		char res = 0;
-		Variable result(DataType::BYTE, BYTE_SIZE);
-		rpn.createOperand(result, &res);
+		rpn.createOperand(make_variable<char>(), &res);
 	}
 }
 
@@ -392,8 +385,7 @@ void NotCommand::execute(RPN& rpn)
 	auto variable = rpn.getNextOperand();
 	void* data = rpn.getOperandData(variable);
 	char res = !get_val<char>(data) ? 1 : 0;
-	Variable result(DataType::BYTE, BYTE_SIZE);
-	rpn.createOperand(result, &res);
+	rpn.createOperand(make_variable<char>(), &res);
 }
 
 // AssignCommand class
@@ -423,7 +415,7 @@ void AssignCommand::execute(RPN& rpn)
 		case DataType::FLOAT:
 		{
 			double rightValue = get_val<double>(rightData);
-			*(int*)leftData = rightValue;
+			*(int*)leftData = static_cast<int>(rightValue);
 			break;
 		}
 		case DataType::BYTE:
@@ -471,13 +463,13 @@ void AssignCommand::execute(RPN& rpn)
 		case DataType::INT:
 		{
 			int rightValue = get_val<int>(rightData);
-			*(char*)leftData = rightValue;
+			*(char*)leftData = static_cast<char>(rightValue);
 			break;
 		}
 		case DataType::FLOAT:
 		{
 			double rightValue = get_val<double>(rightData);
-			*(char*)leftData = rightValue;
+			*(char*)leftData = static_cast<char>(rightValue);
 			break;
 		}
 		case DataType::BYTE:
@@ -520,22 +512,19 @@ void perform(RPN& rpn, operation op)
 		case DataType::INT:
 		{
 			int res = op(get_val<int>(leftData), get_val<int>(rightData)); //вызов нужной операции
-			Variable result(DataType::INT, INT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<int>(), &res);
 		}
 		break;
 		case DataType::FLOAT:
 		{
 			double res = op(get_val<int>(leftData), get_val<double>(rightData));
-			Variable result(DataType::FLOAT, FLOAT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<double>(), &res);
 		}
 		break;
 		case DataType::BYTE:
 		{
 			int res = op(get_val<int>(leftData), get_val<char>(rightData));
-			Variable result(DataType::INT, INT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<int>(), &res);
 		}
 		break;
 		default:
@@ -550,22 +539,19 @@ void perform(RPN& rpn, operation op)
 		case DataType::INT:
 		{
 			double res = op(get_val<double>(leftData), get_val<int>(rightData));
-			Variable result(DataType::FLOAT, FLOAT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<double>(), &res);
 		}
 		break;
 		case DataType::FLOAT:
 		{
 			double res = op(get_val<double>(leftData), get_val<double>(rightData));
-			Variable result(DataType::FLOAT, FLOAT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<double>(), &res);
 		}
 		break;
 		case DataType::BYTE:
 		{
 			double res = op(get_val<double>(leftData), get_val<char>(rightData));
-			Variable result(DataType::FLOAT, FLOAT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<double>(), &res);
 		}
 		break;
 		default:
@@ -581,22 +567,19 @@ void perform(RPN& rpn, operation op)
 		case DataType::INT:
 		{
 			int res = op(get_val<char>(leftData), get_val<int>(rightData));
-			Variable result(DataType::INT, INT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<int>(), &res);
 		}
 		break;
 		case DataType::FLOAT:
 		{
 			double res = op(get_val<char>(leftData), get_val<double>(rightData));
-			Variable result(DataType::FLOAT, FLOAT_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<double>(), &res);
 		}
 		break;
 		case DataType::BYTE:
 		{
 			char res = op(get_val<char>(leftData), get_val<char>(rightData));
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		default:
@@ -626,22 +609,19 @@ void performCompare(RPN& rpn, operation op)
 		case DataType::INT:
 		{
 			char res = op(get_val<int>(leftData), get_val<int>(rightData)) ? 1 : 0; //вызов нужной операции, op - это указатель на нужную функцию
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		case DataType::FLOAT:
 		{
 			char res = op(get_val<int>(leftData), get_val<double>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		case DataType::BYTE:
 		{
 			char res = op(get_val<int>(leftData), get_val<char>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		default:
@@ -656,22 +636,19 @@ void performCompare(RPN& rpn, operation op)
 		case DataType::INT:
 		{
 			char res = op(get_val<double>(leftData), get_val<int>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		case DataType::FLOAT:
 		{
 			char res = op(get_val<double>(leftData), get_val<double>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		case DataType::BYTE:
 		{
 			char res = op(get_val<double>(leftData), get_val<char>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		default:
@@ -687,22 +664,19 @@ void performCompare(RPN& rpn, operation op)
 		case DataType::INT:
 		{
 			char res = op(get_val<char>(leftData), get_val<int>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		case DataType::FLOAT:
 		{
 			char res = op(get_val<char>(leftData), get_val<double>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		case DataType::BYTE:
 		{
 			char res = op(get_val<char>(leftData), get_val<char>(rightData)) ? 1 : 0;
-			Variable result(DataType::BYTE, BYTE_SIZE);
-			rpn.createOperand(result, &res);
+			rpn.createOperand(make_variable<char>(), &res);
 		}
 		break;
 		default:

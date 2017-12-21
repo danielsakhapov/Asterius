@@ -199,6 +199,26 @@ public:
 	void execute(RPN& rpn) override;
 };
 
+template<class value_type>
+class DataCommand : public Command
+{
+public:
+	DataCommand(const Variable& variable, value_type data)
+		: Command("create constant"),
+		variable_(variable),
+		data_(data)
+	{
+	}
+
+	void execute(RPN& rpn) override 
+	{
+		rpn.createOperand(variable_, static_cast<void*>(&data_));
+	};
+private:
+	value_type data_;
+	Variable variable_;
+};
+
 //HELPER FUNCTIONS
 template<class value_type>
 value_type get_val(void* ptr);
