@@ -165,7 +165,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         symbol_table_.pop();
         break;
     case asterius::ActionType::INT_CONST:
-		rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), 123));
+		rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), std::stoi(token.getName())));
         break;
     case asterius::ActionType::FN_CREATE:
         break;
@@ -185,7 +185,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::VAR_CREATE:
         break;
     case asterius::ActionType::BYTE_CONST:
-		rpn.addCommand(std::make_unique<DataCommand<char> >(make_variable<char>(), 123));
+		rpn.addCommand(std::make_unique<DataCommand<char> >(make_variable<char>(), std::stoi(token.getName())));
         break;
     case asterius::ActionType::ZERO_CONST:
         break;
@@ -200,7 +200,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::PARAMS_BEGIN:
         break;
     case asterius::ActionType::DOUBLE_CONST:
-		rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), 123));
+		rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), std::stod(token.getName())));
         break;
     case asterius::ActionType::STRING_CONST:
         break;
@@ -609,7 +609,7 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::VAR, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
             },
             { 
                 { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 

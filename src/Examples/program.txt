@@ -1,13 +1,11 @@
 fn main()
 {
     let a be double;
+    let b be int;	
 	read(a);
-	a set a * a;
-	write(5);
-    //if (a less b) {
-    //    write(a);
-    //}
-    //else {
-    //    write(b);
-    //}
+    read(b);	
+    while (a less b) {
+        write(a);
+        a set a + 1;
+    }    
 }

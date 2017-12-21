@@ -209,7 +209,7 @@ class DataCommand : public Command
 {
 public:
 	DataCommand(const Variable& variable, value_type data)
-		: Command("create constant"),
+		: Command("create constant " + std::to_string(data)),
 		variable_(variable),
 		data_(data)
 	{

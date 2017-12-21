@@ -13,7 +13,7 @@ void RPN::addCommand(std::unique_ptr<Command> cmd, size_t position)
 {
 	if (commands_[position])
 		commands_[position].release();
-	commands_.emplace(commands_.begin() + position, std::move(cmd));
+	commands_[position] = std::move(cmd);
 }
 
 size_t RPN::getSize()
@@ -89,8 +89,10 @@ void RPN::setCommand(size_t position) noexcept
 
 void RPN::print() const
 {
+	int pos = 0;
 	for (auto&& ptr : commands_) {
-		std::cout << ptr->name() << '\n';
+		std::cout << pos << ' ' << ptr->name() << '\n';
+		++pos;
 	}
 }
 
