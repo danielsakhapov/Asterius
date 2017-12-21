@@ -33,6 +33,8 @@ public:
 	void print() const;
 	size_t getSize();
 	void execute();
+	void beginBlock();
+	void endBlock();
 private:
 	Stack<12800> stack_; //stack to hold data
 	std::vector<std::unique_ptr<Command> > commands_; //RPN
@@ -198,6 +200,40 @@ class AssignCommand : public Command
 {
 public:
 	AssignCommand();
+	void execute(RPN& rpn) override;
+};
+
+template<class value_type>
+class DataCommand : public Command
+{
+public:
+	DataCommand(const Variable& variable, value_type data)
+		: Command("create constant"),
+		variable_(variable),
+		data_(data)
+	{
+	}
+
+	void execute(RPN& rpn) override
+	{
+		rpn.createOperand(variable_, static_cast<void*>(&data_));
+	};
+private:
+	value_type data_;
+	Variable variable_;
+};
+
+class BeginBlockCommand : public Command
+{
+public:
+	BeginBlockCommand();
+	void execute(RPN& rpn) override;
+};
+
+class EndBlockCommand : public Command
+{
+public:
+	EndBlockCommand();
 	void execute(RPN& rpn) override;
 };
 
