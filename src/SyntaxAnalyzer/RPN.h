@@ -31,6 +31,8 @@ public:
 	void setCommand(size_t position) noexcept;
 	void print() const;
 	void execute();
+	void beginBlock();
+	void endBlock();
 private:
 	Stack<12800> stack_; //stack to hold data
 	std::vector<std::unique_ptr<Command> > commands_; //RPN
@@ -210,13 +212,27 @@ public:
 	{
 	}
 
-	void execute(RPN& rpn) override 
+	void execute(RPN& rpn) override
 	{
 		rpn.createOperand(variable_, static_cast<void*>(&data_));
 	};
 private:
 	value_type data_;
 	Variable variable_;
+};
+
+class BeginBlockCommand : public Command
+{
+public:
+	BeginBlockCommand();
+	void execute(RPN& rpn) override;
+};
+
+class EndBlockCommand : public Command
+{
+public:
+	EndBlockCommand();
+	void execute(RPN& rpn) override;
 };
 
 //HELPER FUNCTIONS
