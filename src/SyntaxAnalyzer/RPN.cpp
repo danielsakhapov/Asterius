@@ -9,6 +9,18 @@ void RPN::addCommand(std::unique_ptr<Command> cmd)
     commands_.emplace_back(std::move(cmd));
 }
 
+void RPN::addCommand(std::unique_ptr<Command> cmd, size_t position)
+{
+	if (commands_[position])
+		commands_[position].release();
+	commands_[position] = std::move(cmd);
+}
+
+size_t RPN::getSize()
+{
+	return commands_.size();
+}
+
 void RPN::execute()
 {
     auto sz = commands_.size();
@@ -39,11 +51,20 @@ void RPN::createVariable(const Variable& variable)
     stack_.addVariable(variable);
 }
 
+
+
 void RPN::createOperand(Variable& variable, void* src)
 {
     // create temp variable and add to operands
     stack_.createVariable(variable, src);
     operands_.emplace_back(variable, true);
+}
+
+void RPN::createOperand(Variable&& variable, void* src)
+{
+	// create temp variable and add to operands
+	stack_.createVariable(variable, src);
+	operands_.emplace_back(variable, true);
 }
 
 std::pair<Variable, void*> RPN::getNextOperand()
@@ -64,9 +85,11 @@ void RPN::setCommand(size_t position) noexcept
 
 void RPN::print() const
 {
-    for (auto&& ptr : commands_) {
-        std::cout << ptr->name() << '\n';
-    }
+	int pos = 0;
+	for (auto&& ptr : commands_) {
+		std::cout << pos << ' ' << ptr->name() << '\n';
+		++pos;
+	}
 }
 
 //Commands

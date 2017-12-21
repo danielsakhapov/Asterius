@@ -37,18 +37,18 @@ RPN Parser::analyze()
             throw;
         }
     }
-    while (!actionsStack_.empty()) {
-        auto topElement = elementsStack_.back();
-        generate(rpn, token);
-        elementsStack_.pop_back();
-        actionsStack_.pop_back();
-        if (!isTerminal(topElement)) {
-            transit(topElement, token);
-        }
-        else {
-            match(topElement, token);
-        }
-    }
+	while (!actionsStack_.empty()) {
+		auto topElement = elementsStack_.back();
+		generate(rpn, token);
+		elementsStack_.pop_back();
+		actionsStack_.pop_back();
+		if (!isTerminal(topElement)) {
+			transit(topElement, token);
+		}
+		else {
+			match(topElement, token);
+		}
+	}
     return rpn;
 }
 
@@ -145,6 +145,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     }
         break;
     case asterius::ActionType::IF_END:
+	rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize()), labelsStack_.top());	
         break;
     case asterius::ActionType::PRODUCT:
         rpn.addCommand(std::make_unique<MultiplyCommand>());
@@ -155,6 +156,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::IF_BEGIN:
         break;
     case asterius::ActionType::ELSE_END:
+        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize()), labelsStack_.top());
         break;
     case asterius::ActionType::DIVISION:
         rpn.addCommand(std::make_unique<DivideCommand>());
@@ -164,24 +166,34 @@ void Parser::generate(RPN& rpn, const Token& token)
 		rpn.addCommand(std::make_unique<EndBlockCommand>());
         break;
     case asterius::ActionType::INT_CONST:
-        rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), 123));
+		rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), std::stoi(token.getName())));
         break;
     case asterius::ActionType::FN_CREATE:
         break;
     case asterius::ActionType::WHILE_END:
+        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() + 2), labelsStack_.top());
+	labelsStack_.pop();
+	rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), labelsStack_.top()));
+	rpn.addCommand(std::make_unique<JumpCommand>());
         break;
     case asterius::ActionType::ELSE_START:
+        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() + 2), labelsStack_.top());
+	labelsStack_.pop();
+	labelsStack_.push(rpn.getSize());
+	rpn.addCommand(nullptr);
+	rpn.addCommand(std::make_unique<JumpCommand>());
         break;
     case asterius::ActionType::VAR_CREATE:
         break;
     case asterius::ActionType::BYTE_CONST:
-        rpn.addCommand(std::make_unique<DataCommand<char> >(make_variable<char>(), 123));
+		rpn.addCommand(std::make_unique<DataCommand<char> >(make_variable<char>(), std::stoi(token.getName())));
         break;
     case asterius::ActionType::ZERO_CONST:
         break;
     case asterius::ActionType::PARAMS_END:
         break;
     case asterius::ActionType::WHILE_BEGIN:
+	labelsStack_.push(rpn.getSize());
         break;
     case asterius::ActionType::BLOCK_BEGIN:
         symbol_table_.push();
@@ -190,13 +202,16 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::PARAMS_BEGIN:
         break;
     case asterius::ActionType::DOUBLE_CONST:
-        rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), 123));
+		rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), std::stod(token.getName())));
         break;
     case asterius::ActionType::STRING_CONST:
         break;
     case asterius::ActionType::FUNCTION_CALL:
         break;
     case asterius::ActionType::CONDITION_END:
+        labelsStack_.push(rpn.getSize());
+        rpn.addCommand(nullptr);
+	rpn.addCommand(std::make_unique<JumpIfNotCommand>());
         break;
     case asterius::ActionType::CONDITION_BEGIN:
         break;
@@ -229,8 +244,8 @@ void Parser::transit(ElementType elementType, const Token& token)
 
 void Parser::match(ElementType elementType, const Token& token) const
 {
-    if (elementType != token.getType())
-        throw std::logic_error("invalid syntax near" + to_string(token.getPosition()));
+	if (elementType != token.getType())
+		throw std::logic_error("unexpected symbol " + token.getName() + " at " + to_string(token.getPosition()));
 }
 
 bool Parser::isTerminal(ElementType elementType) const noexcept

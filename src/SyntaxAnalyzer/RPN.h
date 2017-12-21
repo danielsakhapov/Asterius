@@ -23,12 +23,15 @@ class RPN
 {
 public:
 	void addCommand(std::unique_ptr<Command> cmd);
+	void addCommand(std::unique_ptr<Command> cmd, size_t position);
 	void addOperand(const Variable& variable); //add existing variable to operands
 	void createOperand(Variable& variable, void* src); // create temp variable and add to operands
+	void createOperand(Variable&& variable, void* src);
 	void createVariable(const Variable& variable); //allocates variable on stack
 	std::pair<Variable, void*> getNextOperand();
 	void setCommand(size_t position) noexcept;
 	void print() const;
+	size_t getSize();
 	void execute();
 	void beginBlock();
 	void endBlock();
@@ -205,7 +208,7 @@ class DataCommand : public Command
 {
 public:
 	DataCommand(const Variable& variable, value_type data)
-		: Command("create constant"),
+		: Command("create constant " + std::to_string(data)),
 		variable_(variable),
 		data_(data)
 	{
