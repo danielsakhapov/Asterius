@@ -31,7 +31,9 @@ private:
     std::map<ElementType, std::vector<TransitionRule> > table_;
 
     //temp variables
-    std::string name_;
+    std::string name_; //holds variable name
+	std::vector<size_t> dims_; //holds array dimensions
+	ElementType element_type_; //hold array element type
 
     void transit(ElementType elementType, const Token& token);
 	void match(ElementType elementType, const Token& token) const;

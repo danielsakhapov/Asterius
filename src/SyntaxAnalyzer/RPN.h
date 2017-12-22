@@ -28,6 +28,7 @@ public:
 	void createOperand(Variable& variable, void* src); // create temp variable and add to operands
 	void createOperand(Variable&& variable, void* src);
 	void createVariable(const Variable& variable); //allocates variable on stack
+	void createVariable(const Variable& variable, void* src); //allocates variable on stack and set memory
 	std::pair<Variable, void*> getNextOperand();
 	void setCommand(size_t position) noexcept;
 	void print() const;
@@ -75,13 +76,88 @@ private:
 	Variable variable_;
 };
 
+template<class type>
 class CreateVariableCommand : public Command
 {
 public:
-	CreateVariableCommand(const Variable& variable, const std::string& name);
-	void execute(RPN& rpn) override;
+	CreateVariableCommand(const Variable& variable, const std::string& name)
+		: Command("create variable " + name),
+		variable_(variable)
+	{
+	}
+
+	void execute(RPN& rpn) override
+	{
+	    rpn.createVariable(variable_);
+	}
 private:
 	Variable variable_;
+};
+
+template<>
+class CreateVariableCommand<array_passport> : public Command
+{
+public:
+	CreateVariableCommand(ElementType type, const std::vector<size_t>& dims, const std::string& name)
+		: Command("create variable " + name),
+		type_(type),
+		dims_(dims)
+	{
+	}
+
+	void execute(RPN& rpn) override
+	{
+		precalc();
+		create_variable(rpn, DataType::ARRAY, ARRAY_SIZE, ARRAY_SIZE, dims_[0]);
+		_execute(rpn, 0, ARRAY_SIZE);
+	}
+private:
+	size_t _execute(RPN& rpn, size_t level, size_t offset)
+	{
+		if (level == dims_.size() - 1) { // final dimension
+			for (size_t i = 0; i < dims_[level]; ++i) {
+				Variable variable(get_data_type(type_), get_element_size(type_));
+				rpn.createVariable(variable);
+			}
+		}
+		else {
+			offset += ARRAY_SIZE * dims_[level];
+			for (size_t i = 0, shift = 0; i < dims_[level]; shift += sizes_[level], ++i) {
+				create_variable(rpn, DataType::ARRAY, offset + shift, get_element_size(type_), dims_[level + 1]);
+			}
+			for (size_t i = 0, shift = 0; i < dims_[level]; shift += sizes_[level], ++i) {
+				_execute(rpn, level + 1, offset + shift);
+			}
+		}
+		return 1;
+	}
+
+	void precalc()
+	{
+		if (dims_.size() == 1) 
+			return;
+
+		sizes_.resize(dims_.size() - 1);
+		sizes_.back() = get_element_size(type_) * dims_.back();
+		for (int i = sizes_.size() - 2; i >= 0; --i) {
+			sizes_[i] = (sizes_[i + 1] + ARRAY_SIZE) * dims_[i + 1];
+		}
+	}
+
+	void create_variable(RPN& rpn, DataType type, size_t offset, size_t element_size, size_t size)
+	{
+		array_passport passport;
+		passport.element_type_ = type;
+		passport.block_offset_ = offset;
+		passport.element_size_ = element_size;
+		passport.size_ = size;
+		rpn.createVariable(make_variable<array_passport>(), &passport);
+	}
+
+	std::vector<size_t> sizes_;
+	size_t offset_;
+	ElementType type_;
+	std::vector<size_t> dims_;
 };
 
 class AddCommand : public Command

@@ -85,21 +85,21 @@ void Parser::generate(RPN& rpn, const Token& token)
         auto var = make_variable<int>(token.getPosition());
         symbol_table_.insert(name_, var);
         if (var.isRelative())
-            rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
+            rpn.addCommand(std::make_unique<CreateVariableCommand<int> >(var, name_));
         else
             rpn.createVariable(var);
-    }
         break;
+    }
     case asterius::ActionType::BYTE:
     {
         auto var = make_variable<char>(token.getPosition());
         symbol_table_.insert(name_, var);
         if (var.isRelative())
-            rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
+            rpn.addCommand(std::make_unique<CreateVariableCommand<char> >(var, name_));
         else
             rpn.createVariable(var);
-    }
         break;
+    }
     case asterius::ActionType::NAME:
         name_ = token.getName();
         break;
@@ -118,7 +118,18 @@ void Parser::generate(RPN& rpn, const Token& token)
         rpn.addCommand(std::make_unique<SubtractCommand>());
         break;
     case asterius::ActionType::ARRAY:
-        break;
+	{
+		size_t array_size = ARRAY_SIZE;
+		size_t mult = dims_[0];
+		for (size_t i = 0; i < dims_.size() - 1; ++i, mult *= dims_[i]) {
+			array_size += ARRAY_SIZE * mult;
+		}
+		array_size += mult * get_element_size(element_type_);
+		Variable variable(DataType::ARRAY, array_size, token.getPosition());
+		rpn.addCommand(std::make_unique<CreateVariableCommand<array_passport> >(element_type_, dims_, name_));
+		dims_.clear();
+		break;
+	}
     case asterius::ActionType::INDEX:
         break;
     case asterius::ActionType::EMPTY:
@@ -139,11 +150,11 @@ void Parser::generate(RPN& rpn, const Token& token)
         auto var = make_variable<double>(token.getPosition());
         symbol_table_.insert(name_, var);
         if (var.isRelative())
-            rpn.addCommand(std::make_unique<CreateVariableCommand>(var, name_));
+            rpn.addCommand(std::make_unique<CreateVariableCommand<double> >(var, name_));
         else
             rpn.createVariable(var);
-    }
         break;
+    }
     case asterius::ActionType::IF_END:
 	    rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() - 1), labelsStack_.top());
 		labelsStack_.pop();
@@ -161,6 +172,9 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::DIVISION:
         rpn.addCommand(std::make_unique<DivideCommand>());
         break;
+	case asterius::ActionType::SAVE_TYPE:
+		element_type_ = token.getType();
+		break;
     case asterius::ActionType::BLOCK_END:
         symbol_table_.pop();
 		rpn.addCommand(std::make_unique<EndBlockCommand>());
@@ -217,6 +231,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::CONDITION_BEGIN:
         break;
     case asterius::ActionType::ARRAY_DEMENSION:
+		dims_.push_back(std::stoi(token.getName()));
         break;
     default:
         break;
@@ -334,8 +349,8 @@ Parser::Parser(Lexer&& lexer)
                 { ActionType::STRING }
             },
             {
-                { ElementType::ARRAY, ElementType::OF, ElementType::LTYPEDEF, ElementType::OF, ElementType::INT_CONST, ElementType::ZARR },
-                { ActionType::ARRAY, ActionType::EMPTY, ActionType::EMPTY, ActionType::ARRAY_DEMENSION, ActionType::INT_CONST, ActionType::EMPTY }
+                { ElementType::ARRAY, ElementType::OF, ElementType::LTYPEDEF, ElementType::BY, ElementType::INT_CONST, ElementType::ZARR, ElementType::Z },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::ARRAY_DEMENSION, ActionType::EMPTY, ActionType::ARRAY }
             },
         })
     );
@@ -344,19 +359,19 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             {
                 { ElementType::INT },
-                { ActionType::INT }
+                { ActionType::SAVE_TYPE }
             },
             {
                 { ElementType::DOUBLE },
-                { ActionType::DOUBLE }
+                { ActionType::SAVE_TYPE }
             },
             {
                 { ElementType::BYTE },
-                { ActionType::BYTE }
+                { ActionType::SAVE_TYPE }
             },
             {
                 { ElementType::STRING },
-                { ActionType::STRING }
+                { ActionType::SAVE_TYPE }
             },
     })
     );
@@ -908,7 +923,7 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::BY, ElementType::INT_CONST, ElementType::ZARR }, 
-                { ActionType::ARRAY_DEMENSION, ActionType::INT_CONST, ActionType::EMPTY } 
+                { ActionType::EMPTY, ActionType::ARRAY_DEMENSION, ActionType::EMPTY }
             },
             { 
                 { ElementType::EMPTY },

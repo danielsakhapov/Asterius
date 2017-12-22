@@ -1,15 +1,5 @@
 fn main()
 {
-	let a be int;
-	let b be int;
-	read(a);
-	read(b);
-    while (a less b) {
-		if (a less 7) {
-		    write(a);
-		}
-		else {
-		}
-		a set a + 1;
-	}
+	let sad be array of int by 4 by 3 by 2;
+	a[0] set 10;
 }

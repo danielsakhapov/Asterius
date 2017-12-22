@@ -38,6 +38,7 @@ enum class ActionType
     IF_BEGIN,
     ELSE_END,
     DIVISION,
+	SAVE_TYPE,
     BLOCK_END,
     INT_CONST,
     FN_CREATE,

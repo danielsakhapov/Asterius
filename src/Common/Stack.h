@@ -25,6 +25,12 @@ public:
         top_ += variable.size();
     }
 
+	void addVariable(const Variable& variable, void* src) noexcept
+	{
+		memcpy(top_ptr(), src, variable.size());
+		addVariable(variable);
+	}
+
     void createVariable(Variable& variable, void* src) noexcept
     {
         variable.setOffset(top_ - block_begin_);

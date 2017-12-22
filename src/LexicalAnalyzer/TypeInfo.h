@@ -9,7 +9,25 @@ namespace asterius
 #define BYTE_SIZE 1
 #define INT_SIZE 4
 #define FLOAT_SIZE 8
+#define ARRAY_SIZE sizeof(array_passport)
 #define INDEX_OF_FIRST_TERMINAL 35
+
+enum class DataType
+{
+	BYTE,
+	INT,
+	FLOAT,
+	ARRAY,
+	FUNCTION
+};
+
+struct array_passport
+{
+	DataType element_type_;
+	size_t size_;
+	size_t element_size_;
+	size_t block_offset_;
+};
 
 template<class type>
 struct type_to_variable_size;
@@ -32,13 +50,10 @@ struct type_to_variable_size<double>
 	static constexpr int value = FLOAT_SIZE;
 };
 
-enum class DataType
+template<>
+struct type_to_variable_size<array_passport>
 {
-    BYTE,
-    INT,
-    FLOAT,
-    ARRAY,
-    FUNCTION
+	static constexpr int value = ARRAY_SIZE;
 };
 
 template<class type>
@@ -60,6 +75,12 @@ template<>
 struct type_to_type<double>
 {
 	static constexpr DataType value = DataType::FLOAT;
+};
+
+template<>
+struct type_to_type<array_passport>
+{
+	static constexpr DataType value = DataType::ARRAY;
 };
 
 enum class ElementType
@@ -190,6 +211,10 @@ Variable make_variable(const Position& position = Position())
 {
 	return Variable(type_to_type<type>::value, type_to_variable_size<type>::value, position);
 }
+
+size_t get_element_size(ElementType type);
+DataType get_data_type(ElementType type);
+
 
 class Token
 {

@@ -51,7 +51,10 @@ void RPN::createVariable(const Variable& variable)
     stack_.addVariable(variable);
 }
 
-
+void RPN::createVariable(const Variable& variable, void* src)
+{
+	stack_.addVariable(variable, src);
+}
 
 void RPN::createOperand(Variable& variable, void* src)
 {
@@ -170,18 +173,6 @@ OperandCommand::OperandCommand(const Variable& variable, const std::string& name
 void OperandCommand::execute(RPN& rpn)
 {
     rpn.addOperand(variable_);
-}
-
-// CreateVariableCommand class
-CreateVariableCommand::CreateVariableCommand(const Variable& variable, const std::string& name)
-    : Command("create variable " + name),
-    variable_(variable)
-{
-}
-
-void CreateVariableCommand::execute(RPN& rpn)
-{
-    rpn.createVariable(variable_);
 }
 
 // AddCommand class

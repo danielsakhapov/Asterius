@@ -92,6 +92,39 @@ DataType Variable::type() const noexcept
     return type_;
 }
 
+size_t asterius::get_element_size(ElementType type)
+{
+	switch (type)
+	{
+	case asterius::ElementType::BYTE:
+		return BYTE_SIZE;
+	case asterius::ElementType::INT:
+		return INT_SIZE;
+	case asterius::ElementType::DOUBLE:
+		return FLOAT_SIZE;
+	case asterius::ElementType::ARRAY:
+	default:
+		return ARRAY_SIZE;
+	}
+}
+
+DataType asterius::get_data_type(ElementType type)
+{
+	switch (type)
+	{
+	case asterius::ElementType::BYTE:
+		return DataType::BYTE;
+	case asterius::ElementType::INT:
+		return DataType::INT;
+	case asterius::ElementType::DOUBLE:
+		return DataType::FLOAT;
+	case asterius::ElementType::ARRAY:
+	default:
+		return DataType::ARRAY;
+	}
+}
+
+
 //Token
 Token::Token()
 {
