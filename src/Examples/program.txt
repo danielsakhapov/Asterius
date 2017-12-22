@@ -5,7 +5,11 @@ fn main()
 	read(a);
 	read(b);
     while (a less b) {
-		write(a);
+		if (a less 7) {
+		    write(a);
+		}
+		else {
+		}
 		a set a + 1;
 	}
 }

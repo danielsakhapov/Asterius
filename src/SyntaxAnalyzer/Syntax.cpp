@@ -145,7 +145,8 @@ void Parser::generate(RPN& rpn, const Token& token)
     }
         break;
     case asterius::ActionType::IF_END:
-	rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() - 1), labelsStack_.top());	
+	    rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() - 1), labelsStack_.top());
+		labelsStack_.pop();
         break;
     case asterius::ActionType::PRODUCT:
         rpn.addCommand(std::make_unique<MultiplyCommand>());
@@ -156,7 +157,6 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::IF_BEGIN:
         break;
     case asterius::ActionType::ELSE_END:
-        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() - 1), labelsStack_.top());
         break;
     case asterius::ActionType::DIVISION:
         rpn.addCommand(std::make_unique<DivideCommand>());
@@ -171,17 +171,18 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::FN_CREATE:
         break;
     case asterius::ActionType::WHILE_END:
-        rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() + 1), labelsStack_.top());
-	labelsStack_.pop();
-	rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), labelsStack_.top()));
-	rpn.addCommand(std::make_unique<JumpCommand>());
+        rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), rpn.getSize() + 1), labelsStack_.top());
+		labelsStack_.pop();
+        rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), labelsStack_.top()));
+		labelsStack_.pop();
+        rpn.addCommand(std::make_unique<JumpCommand>());
         break;
     case asterius::ActionType::ELSE_START:
         rpn.addCommand(std::make_unique<DataCommand<int>>(make_variable<int>(), rpn.getSize() + 1), labelsStack_.top());
-	labelsStack_.pop();
-	labelsStack_.push(rpn.getSize());
-	rpn.addCommand(nullptr);
-	rpn.addCommand(std::make_unique<JumpCommand>());
+	    labelsStack_.pop();
+	    labelsStack_.push(rpn.getSize());
+	    rpn.addCommand(nullptr);
+	    rpn.addCommand(std::make_unique<JumpCommand>());
         break;
     case asterius::ActionType::VAR_CREATE:
         break;
@@ -193,7 +194,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::PARAMS_END:
         break;
     case asterius::ActionType::WHILE_BEGIN:
-	labelsStack_.push(rpn.getSize() - 1);
+	    labelsStack_.push(rpn.getSize() - 1);
         break;
     case asterius::ActionType::BLOCK_BEGIN:
         symbol_table_.push();
@@ -211,7 +212,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::CONDITION_END:
         labelsStack_.push(rpn.getSize());
         rpn.addCommand(nullptr);
-	rpn.addCommand(std::make_unique<JumpIfNotCommand>());
+	    rpn.addCommand(std::make_unique<JumpIfNotCommand>());
         break;
     case asterius::ActionType::CONDITION_BEGIN:
         break;
@@ -398,11 +399,11 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::WHILE, ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::BLOCK, ElementType::STATEMENT },
-                { ActionType::WHILE_BEGIN, ActionType::CONDITION_BEGIN, ActionType::EMPTY, ActionType::CONDITION_END, ActionType::EMPTY, ActionType::WHILE_END }
+                { ActionType::WHILE_BEGIN, ActionType::CONDITION_BEGIN, ActionType::EMPTY, ActionType::EMPTY, ActionType::CONDITION_END, ActionType::WHILE_END }
             },
             {
-                { ElementType::IF, ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::BLOCK, ElementType::ELSEST },
-                { ActionType::IF_BEGIN, ActionType::CONDITION_BEGIN, ActionType::EMPTY, ActionType::CONDITION_END, ActionType::EMPTY, ActionType::IF_END }
+                { ElementType::IF, ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::BLOCK, ElementType::ELSEST, ElementType::STATEMENT },
+                { ActionType::IF_BEGIN, ActionType::CONDITION_BEGIN, ActionType::EMPTY, ActionType::EMPTY, ActionType::CONDITION_END, ActionType::EMPTY, ActionType::IF_END }
             },
             { 
                 { ElementType::READ, ElementType::OPEN_BRACKET, ElementType::NAME, ElementType::DESC, ElementType::CLOSE_BRACKET, ElementType::STATEMENT_END, ElementType::STATEMENT }, 
@@ -443,8 +444,8 @@ Parser::Parser(Lexer&& lexer)
         ElementType::ELSEST,
         std::vector<TransitionRule>({
             { 
-                { ElementType::ELSE, ElementType::BLOCK, ElementType::STATEMENT },
-                { ActionType::ELSE_START, ActionType::EMPTY, ActionType::ELSE_END }
+                { ElementType::ELSE, ElementType::BLOCK },
+                { ActionType::ELSE_START, ActionType::EMPTY }
             },
             { 
                 { ElementType::EMPTY },
