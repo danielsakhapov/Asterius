@@ -250,6 +250,8 @@ void NegateCommand::execute(RPN& rpn)
         rpn.createOperand(make_variable<char>(), &res);
         break;
     }
+	default:
+		throw std::logic_error("Wrong type!");
     }
 }
 
@@ -264,6 +266,10 @@ void JumpCommand::execute(RPN& rpn)
     auto pr = rpn.getNextOperand();
 	Variable variable = pr.first;
 	void* data = pr.second;
+	if (variable.type() != DataType::INT)
+	{
+		throw std::logic_error("Wrong type!");
+	}
     rpn.setCommand(get_val<int>(data));
 }
 
@@ -278,9 +284,17 @@ void JumpIfNotCommand::execute(RPN& rpn)
     auto pr = rpn.getNextOperand();
 	Variable variable = pr.first;
 	void* data = pr.second;
+	if (variable.type() != DataType::INT)
+	{
+		throw std::logic_error("Wrong type!");
+	}
     pr = rpn.getNextOperand();
     Variable condition = pr.first;
     void* conditionData = pr.second;
+	if (condition.type() != DataType::BYTE)
+	{
+		throw std::logic_error("Wrong type!");
+	}
     if (!get_val<char>(conditionData))
         rpn.setCommand(get_val<int>(data));
 }
@@ -365,6 +379,10 @@ void AndCommand::execute(RPN& rpn)
     pr = rpn.getNextOperand();
     auto leftVariable = pr.first;
     void* leftData = pr.second;
+	if (leftVariable.type() != DataType::BYTE || rightVariable.type() != DataType::BYTE)
+	{
+		throw std::logic_error("Wrong type!");
+	}
     if (get_val<char>(leftData) && get_val<char>(rightData))
     {
         char res = 1;
@@ -391,6 +409,10 @@ void OrCommand::execute(RPN& rpn)
     pr = rpn.getNextOperand();
     auto leftVariable = pr.first;
     void* leftData = pr.second;
+	if (leftVariable.type() != DataType::BYTE || rightVariable.type() != DataType::BYTE)
+	{
+		throw std::logic_error("Wrong type!");
+	}
     if (get_val<char>(leftData) || get_val<char>(rightData))
     {
         char res = 1;
@@ -414,6 +436,10 @@ void NotCommand::execute(RPN& rpn)
     auto pr = rpn.getNextOperand();
     auto variable = pr.first;
     void* data = pr.second;
+	if (variable.type() != DataType::BYTE)
+	{
+		throw std::logic_error("Wrong type!");
+	}
     char res = !get_val<char>(data) ? 1 : 0;
     rpn.createOperand(make_variable<char>(), &res);
 }
@@ -457,7 +483,7 @@ void AssignCommand::execute(RPN& rpn)
             break;
         }
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
         break;
     }
@@ -484,7 +510,7 @@ void AssignCommand::execute(RPN& rpn)
             break;
         }
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
         break;
     }
@@ -511,16 +537,16 @@ void AssignCommand::execute(RPN& rpn)
             break;
         }
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
         break;
     }
     default:
-        break;
+		throw std::logic_error("Wrong type!");
     }
 }
 
-//IndexCommand class
+// IndexCommand class
 IndexCommand::IndexCommand()
 	:Command("index")
 {
@@ -530,12 +556,24 @@ void IndexCommand::execute(RPN& rpn)
 {
 	auto pr = rpn.getNextOperand();
 	auto variable = pr.first;
+	if (variable.type()!= DataType::INT)
+	{
+		throw std::logic_error("Array index must be integer number!");
+	}
 	void* data = pr.second;
 	int index = get_val<int>(data);
 	pr = rpn.getNextOperand();
-	data = pr.second;
 	variable = pr.first;
+	if (variable.type() != DataType::ARRAY)
+	{
+		throw std::logic_error("Array expected!");
+	}
+	data = pr.second;
 	auto passport = get_val<array_passport>(data);
+	if (passport.size_ <= index || index < 0)
+	{
+		throw std::logic_error("Array index out of bounce!");
+	}
 	int offset = variable.offset() + (int)passport.block_offset_ + (int)passport.element_size_ * index;
 	Variable result(passport.element_type_, passport.element_size_);
 	result.setOffset(offset);
@@ -543,7 +581,7 @@ void IndexCommand::execute(RPN& rpn)
 	rpn.addOperand(result);
 }
 
-	// BeginBlockCommand
+// BeginBlockCommand
 BeginBlockCommand::BeginBlockCommand()
     :Command("begin block")
 {
@@ -605,7 +643,7 @@ void perform(RPN& rpn, operation op)
         }
         break;
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
     }
     break;
@@ -632,7 +670,7 @@ void perform(RPN& rpn, operation op)
         }
         break;
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
     }
     break;
@@ -660,12 +698,12 @@ void perform(RPN& rpn, operation op)
         }
         break;
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
     }
     break;
     default:
-        break;
+		throw std::logic_error("Wrong type!");
     }
 }
 
@@ -703,7 +741,7 @@ void performCompare(RPN& rpn, operation op)
         }
         break;
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
     }
     break;
@@ -730,7 +768,7 @@ void performCompare(RPN& rpn, operation op)
         }
         break;
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
     }
     break;
@@ -758,12 +796,12 @@ void performCompare(RPN& rpn, operation op)
         }
         break;
         default:
-            break;
+			throw std::logic_error("Wrong type!");
         }
     }
     break;
     default:
-        break;
+		throw std::logic_error("Wrong type!");
     }
 }
 
