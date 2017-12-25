@@ -520,7 +520,29 @@ void AssignCommand::execute(RPN& rpn)
     }
 }
 
-// BeginBlockCommand
+//IndexCommand class
+IndexCommand::IndexCommand()
+	:Command("index")
+{
+}
+
+void IndexCommand::execute(RPN& rpn)
+{
+	auto pr = rpn.getNextOperand();
+	auto variable = pr.first;
+	void* data = pr.second;
+	int index = get_val<int>(data);
+	pr = rpn.getNextOperand();
+	data = pr.second;
+	variable = pr.first;
+	auto passport = get_val<array_passport>(data);
+	auto offset = variable.offset() + passport.block_offset_ + passport.element_size_*index;
+	Variable result(passport.element_type_, passport.element_size_);
+	result.setOffset(offset);
+	rpn.addOperand(result);
+}
+
+	// BeginBlockCommand
 BeginBlockCommand::BeginBlockCommand()
     :Command("begin block")
 {

@@ -279,6 +279,13 @@ public:
 	void execute(RPN& rpn) override;
 };
 
+class IndexCommand : public Command
+{
+public:
+	IndexCommand();
+	void execute(RPN& rpn) override;
+};
+
 template<class value_type>
 class DataCommand : public Command
 {
