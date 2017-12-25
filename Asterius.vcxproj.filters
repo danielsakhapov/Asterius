@@ -88,5 +88,8 @@
     <Text Include="sum_procedure.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="arrays_dims.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

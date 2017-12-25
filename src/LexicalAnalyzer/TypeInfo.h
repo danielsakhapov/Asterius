@@ -9,7 +9,7 @@ namespace asterius
 #define BYTE_SIZE 1
 #define INT_SIZE 4
 #define FLOAT_SIZE 8
-#define ARRAY_SIZE sizeof(array_passport)
+#define ARRAY_SIZE static_cast<int>(sizeof(array_passport))
 #define INDEX_OF_FIRST_TERMINAL 35
 
 enum class DataType

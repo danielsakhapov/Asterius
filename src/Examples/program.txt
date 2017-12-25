@@ -23,7 +23,7 @@ fn main()
 		i set i + 1;
 	}
 	i set 0;
-	write(a);
+	//write(a);
 	let c be byte 10;
 	write(c);
 	c set 32;
