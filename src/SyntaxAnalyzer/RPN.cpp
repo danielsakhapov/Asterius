@@ -536,9 +536,10 @@ void IndexCommand::execute(RPN& rpn)
 	data = pr.second;
 	variable = pr.first;
 	auto passport = get_val<array_passport>(data);
-	auto offset = variable.offset() + passport.block_offset_ + passport.element_size_*index;
+	int offset = variable.offset() + (int)passport.block_offset_ + (int)passport.element_size_ * index;
 	Variable result(passport.element_type_, passport.element_size_);
 	result.setOffset(offset);
+    //result.setRelative(false);
 	rpn.addOperand(result);
 }
 

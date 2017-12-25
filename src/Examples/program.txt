@@ -1,5 +1,33 @@
 fn main()
 {
-	let sad be array of int by 4 by 3 by 2;
-	a[0] set 10;
+	let a be array of int by 10;
+	let n be int;
+	read(n);
+	let i be int;
+	i set 0;
+	while (i less n) {
+		read(a[i]);
+		i set i + 1;
+	}
+	i set 0;
+	while (i less n) {
+		let j be int;
+		j set 0;
+		while (j less n - 1) {
+			if (a[j] greater a[j + 1]) {
+				let t be int;
+				t set a[j];
+				a[j] set a[j + 1];
+				a[j + 1] set t;
+			}
+			j set j + 1;
+		}
+		i set i + 1;
+	}
+	i set 0;
+	while (i less n) {
+		write(a[i]);
+		i set i + 1;
+	}
+	//5 5 4 3 2 1
 }

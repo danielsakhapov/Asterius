@@ -60,6 +60,7 @@ public:
     void pop()
     {
         assert(!block_begins_.empty());
+        top_ = block_begin_;
         block_begin_ = block_begins_.back();
         block_begins_.pop_back();
     }

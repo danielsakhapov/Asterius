@@ -78,7 +78,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         rpn.addCommand(std::make_unique<AndCommand>());
         break;
     case asterius::ActionType::NOT:
-        rpn.addCommand(std::make_unique<NegateCommand>());
+        rpn.addCommand(std::make_unique<NotCommand>());
         break;
     case asterius::ActionType::INT:
     {
@@ -125,12 +125,14 @@ void Parser::generate(RPN& rpn, const Token& token)
 			array_size += ARRAY_SIZE * mult;
 		}
 		array_size += mult * get_element_size(element_type_);
-		Variable variable(DataType::ARRAY, array_size, token.getPosition());
+		Variable var(DataType::ARRAY, array_size, token.getPosition());
+        symbol_table_.insert(name_, var);
 		rpn.addCommand(std::make_unique<CreateVariableCommand<array_passport> >(element_type_, dims_, name_));
 		dims_.clear();
 		break;
 	}
     case asterius::ActionType::INDEX:
+    rpn.addCommand(std::make_unique<IndexCommand>());
         break;
     case asterius::ActionType::EMPTY:
         break;
@@ -473,7 +475,7 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::OPEN_SQUARE, ElementType::EXPR, ElementType::CLOSE_SQUARE, ElementType::INDEX },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::INDEX, ActionType::EMPTY }
+                { ActionType::VAR, ActionType::EMPTY, ActionType::INDEX, ActionType::EMPTY }
             },
             { 
                 { ElementType::OPEN_BRACKET, ElementType::PARAM, ElementType::CLOSE_BRACKET },

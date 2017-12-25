@@ -108,7 +108,7 @@ public:
 	void execute(RPN& rpn) override
 	{
 		precalc();
-		create_variable(rpn, DataType::ARRAY, ARRAY_SIZE, ARRAY_SIZE, dims_[0]);
+		create_variable(rpn, ARRAY_SIZE, dims_[0], dims_.size() == 1);
 		_execute(rpn, 0, ARRAY_SIZE);
 	}
 private:
@@ -123,7 +123,7 @@ private:
 		else {
 			offset += ARRAY_SIZE * dims_[level];
 			for (size_t i = 0, shift = 0; i < dims_[level]; shift += sizes_[level], ++i) {
-				create_variable(rpn, DataType::ARRAY, offset + shift, get_element_size(type_), dims_[level + 1]);
+				create_variable(rpn, offset + shift, dims_[level + 1], level == dims_.size() - 1);
 			}
 			for (size_t i = 0, shift = 0; i < dims_[level]; shift += sizes_[level], ++i) {
 				_execute(rpn, level + 1, offset + shift);
@@ -144,12 +144,12 @@ private:
 		}
 	}
 
-	void create_variable(RPN& rpn, DataType type, size_t offset, size_t element_size, size_t size)
+	void create_variable(RPN& rpn, size_t offset, size_t size, bool lastDim)
 	{
 		array_passport passport;
-		passport.element_type_ = type;
+		passport.element_type_ = lastDim ? get_data_type(type_) : DataType::ARRAY;
 		passport.block_offset_ = offset;
-		passport.element_size_ = element_size;
+		passport.element_size_ = lastDim ? get_element_size(type_) : ARRAY_SIZE;
 		passport.size_ = size;
 		rpn.createVariable(make_variable<array_passport>(), &passport);
 	}
