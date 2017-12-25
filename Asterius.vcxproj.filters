@@ -82,5 +82,11 @@
     <Text Include="src\Examples\scope_of_vision.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="arithmetic.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="sum_procedure.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

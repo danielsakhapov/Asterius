@@ -1,0 +1,14 @@
+fn main()
+{
+	let a be double 0.5;
+	let b be double 1.6;
+	write(a + b); //2.1
+	write(a / b); //0.3125
+	let c be double 5;
+	write(a + b * -c); // -7.5
+	write((a + b) * c); // 10.5
+	write((-a - b) * -c); // 10.5
+	write(-(a + b) * c); // -10.5
+	write(a + a * a + a); // 1.25
+	write(a + a * (a + a)); // 1
+}

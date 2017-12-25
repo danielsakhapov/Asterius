@@ -3,8 +3,7 @@ fn main()
 	let a be int;
 	read(a);
 	if (1 less 2) {
-		let a be int;
-		a set 10;
+		let a be int 10;
 		write(a);
 	}
 	write(a);

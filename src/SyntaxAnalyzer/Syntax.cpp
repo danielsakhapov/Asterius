@@ -104,6 +104,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         name_ = token.getName();
         break;
     case asterius::ActionType::MAIN:
+    rpn.setCommand(rpn.getSize());
         break;
     case asterius::ActionType::READ:
         rpn.addCommand(std::make_unique<ReadCommand>());

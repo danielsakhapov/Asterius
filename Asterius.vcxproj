@@ -136,9 +136,11 @@
     <ClInclude Include="src\SyntaxAnalyzer\SyntaxStructures.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="arithmetic.txt" />
     <Text Include="src\Examples\scope_of_vision.txt" />
     <Text Include="src\Examples\program.txt" />
     <Text Include="src\Examples\buble.txt" />
+    <Text Include="sum_procedure.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
