@@ -131,6 +131,16 @@ void WriteCommand::execute(RPN& rpn)
     case DataType::BYTE:
         std::cout << (int)*((char*)data) << std::endl;
         break;
+    case DataType::ARRAY:
+    {
+        auto passport = get_val<array_passport>(data);
+        std::cout << '[';
+        for (size_t i = 0; i < passport.size_; ++i) {
+            //print array
+        }
+        std::cout << ']';
+        break;
+    }
     default:
         break;
     }

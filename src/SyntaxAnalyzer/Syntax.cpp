@@ -225,15 +225,35 @@ void Parser::generate(RPN& rpn, const Token& token)
         break;
     case asterius::ActionType::FUNCTION_CALL:
         break;
+    case asterius::ActionType::ASS_INT_CONST:
+        rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(name_), name_));
+        rpn.addCommand(std::make_unique<DataCommand<int> >(make_variable<int>(), std::stoi(token.getName())));
+        rpn.addCommand(std::make_unique<AssignCommand>());
+        break;
     case asterius::ActionType::CONDITION_END:
         labelsStack_.push(rpn.getSize());
         rpn.addCommand(nullptr);
 	    rpn.addCommand(std::make_unique<JumpIfNotCommand>());
         break;
+    case asterius::ActionType::ASS_BYTE_CONST:
+        rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(name_), name_));
+        rpn.addCommand(std::make_unique<DataCommand<char> >(make_variable<char>(), token.getName()[0]));
+        rpn.addCommand(std::make_unique<AssignCommand>());
+        break;
     case asterius::ActionType::CONDITION_BEGIN:
         break;
     case asterius::ActionType::ARRAY_DEMENSION:
 		dims_.push_back(std::stoi(token.getName()));
+        break;
+    case asterius::ActionType::ASS_STRING_CONST:
+        rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(name_), name_));
+        //rpn.addCommand(std::make_unique<DataCommand<std::string> >(make_variable<std::string>(), token.getName()));
+        rpn.addCommand(std::make_unique<AssignCommand>());
+        break;
+    case asterius::ActionType::ASS_DOUBLE_CONST:
+        rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(name_), name_));
+        rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), std::stof(token.getName())));
+        rpn.addCommand(std::make_unique<AssignCommand>());
         break;
     default:
         break;
