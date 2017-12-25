@@ -590,7 +590,7 @@ void IndexCommand::execute(RPN& rpn)
 	}
 	data = pr.second;
 	auto passport = get_val<array_passport>(data);
-	if (passport.size_ <= index || index < 0)
+	if ((int)passport.size_ <= index || index < 0)
 	{
 		throw std::logic_error("Array index out of bounce!");
 	}
