@@ -73,13 +73,22 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="src\Examples\arithmetic.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="src\Examples\arrays_dims.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="src\Examples\buble.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
     <Text Include="src\Examples\program.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="src\Examples\program1.txt">
+    <Text Include="src\Examples\scope_of_vision.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="src\Examples\err.txt">
+    <Text Include="src\Examples\sum_procedure.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

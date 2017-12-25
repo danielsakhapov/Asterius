@@ -1,0 +1,13 @@
+fn sum(let a be int, let b be int)
+{
+	write(a + b);
+}
+
+fn main()
+{
+	let a be int;
+	let b be int;
+	read(a);
+	read(b);
+	sum(a, b);
+}

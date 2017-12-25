@@ -109,10 +109,10 @@ public:
 	{
 		precalc();
 		create_variable(rpn, ARRAY_SIZE, dims_[0], dims_.size() == 1);
-		_execute(rpn, 0, ARRAY_SIZE);
+		_execute(rpn, 0);
 	}
 private:
-	size_t _execute(RPN& rpn, size_t level, size_t offset)
+	size_t _execute(RPN& rpn, size_t level)
 	{
 		if (level == dims_.size() - 1) { // final dimension
 			for (size_t i = 0; i < dims_[level]; ++i) {
@@ -121,12 +121,11 @@ private:
 			}
 		}
 		else {
-			offset += ARRAY_SIZE * dims_[level];
-			for (size_t i = 0, shift = 0; i < dims_[level]; shift += sizes_[level], ++i) {
-				create_variable(rpn, offset + shift, dims_[level + 1], level == dims_.size() - 1);
+			for (int i = 0, offset = ARRAY_SIZE * dims_[level]; i < (int)dims_[level]; offset += sizes_[level] - ARRAY_SIZE, ++i) {
+				create_variable(rpn, offset, dims_[level + 1], level == dims_.size() - 2);
 			}
-			for (size_t i = 0, shift = 0; i < dims_[level]; shift += sizes_[level], ++i) {
-				_execute(rpn, level + 1, offset + shift);
+			for (size_t i = 0; i < (int)dims_[level]; ++i) {
+				_execute(rpn, level + 1);
 			}
 		}
 		return 1;
@@ -154,7 +153,7 @@ private:
 		rpn.createVariable(make_variable<array_passport>(), &passport);
 	}
 
-	std::vector<size_t> sizes_;
+	std::vector<int> sizes_;
 	size_t offset_;
 	ElementType type_;
 	std::vector<size_t> dims_;

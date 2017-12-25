@@ -24,8 +24,14 @@ size_t RPN::getSize()
 void RPN::execute()
 {
     auto sz = commands_.size();
-    for (next_ = 0; next_ < sz; ++next_) {
-        commands_[next_]->execute(*this);
+    for (; next_ < sz; ++next_) {
+        try {
+            commands_[next_]->execute(*this);
+        }
+        catch(const std::exception& ex) {
+            std::cerr << ex.what() << "at command:" << next_;//next_ is valid? (i think no)
+            throw;
+        }
     }
 }
 
@@ -82,7 +88,6 @@ std::pair<Variable, void*> RPN::getNextOperand()
 
 void RPN::setCommand(size_t position) noexcept
 {
-    assert(position < commands_.size());
     next_ = position;
 }
 
@@ -123,14 +128,29 @@ void WriteCommand::execute(RPN& rpn)
     switch (variable.type())
     {
     case DataType::INT:
-        std::cout << *((int*)data) << std::endl;
+        std::cout << *((int*)data);
         break;
     case DataType::FLOAT:
-        std::cout << *((double*)data) << std::endl;
+        std::cout << *((double*)data);
         break;
     case DataType::BYTE:
-        std::cout << (int)*((char*)data) << std::endl;
+        std::cout << *((char*)data);
         break;
+    case DataType::ARRAY:
+    {
+        auto passport = get_val<array_passport>(data);
+        std::cout << '[';
+        for (size_t i = 0; i < passport.size_; ++i) {
+            rpn.addOperand(variable);
+            rpn.createOperand(make_variable<int>(), &i);
+            IndexCommand ind;
+            ind.execute(rpn);
+            execute(rpn);
+            std::cout << ';';
+        }
+        std::cout << ']';
+        break;
+    }
     default:
         break;
     }

@@ -24,12 +24,12 @@ fn main()
 	}
 	i set 0;
 	write(a);
-	//let c be byte 10;
-	//write(c);
-	//c set 32;
-	//while (i less n) {
-	//	write(a[i]);
-	//	write(c);
-	//	i set i + 1;
-	//}
+	let c be byte 10;
+	write(c);
+	c set 32;
+	while (i less n) {
+		write(a[i]);
+		write(c);
+		i set i + 1;
+	}
 }
