@@ -1,6 +1,6 @@
 fn main()
 {
-	if (1 less 2 and 1 equal 3 and 5 neq 0 or 10 greater 5 or 10 neq 0 and 1 neq 0) {
+	if (1 less 1 * 2 and 1 equal 1 or 2 neq 0 + 2 and 2 * 2 neq 2) {
 		write(1);
 	}
 	else {

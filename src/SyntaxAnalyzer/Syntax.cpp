@@ -753,28 +753,28 @@ Parser::Parser(Lexer&& lexer)
         ElementType::AND_FACTOR,
         std::vector<TransitionRule>({
             { 
-                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::COMP_EXPR },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
+                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::NAME, ElementType::DESC, ElementType::COMP_EXPR }, 
-                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY } 
+                { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR },
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::NOT, ElementType::AND_FACTOR, ElementType::COMP_EXPR }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT }
+                { ElementType::NOT, ElementType::AND_FACTOR, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR },
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::INT_CONST, ElementType::COMP_EXPR }, 
-                { ActionType::INT_CONST, ActionType::EMPTY} 
+                { ElementType::INT_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR },
+                { ActionType::INT_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::DOUBLE_CONST, ElementType::COMP_EXPR },
-                { ActionType::DOUBLE_CONST, ActionType::EMPTY } 
+                { ElementType::DOUBLE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR },
+                { ActionType::DOUBLE_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::BYTE_CONST, ElementType::COMP_EXPR }, 
-                { ActionType::BYTE_CONST, ActionType::EMPTY } 
+                { ElementType::BYTE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR },
+                { ActionType::BYTE_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
                 { ElementType::EMPTY },
