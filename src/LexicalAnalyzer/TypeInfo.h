@@ -10,7 +10,7 @@ namespace asterius
 #define INT_SIZE 4
 #define FLOAT_SIZE 8
 #define ARRAY_SIZE static_cast<int>(sizeof(array_passport))
-#define INDEX_OF_FIRST_TERMINAL 35
+#define INDEX_OF_FIRST_TERMINAL 36
 
 enum class DataType
 {
@@ -113,6 +113,7 @@ enum class ElementType
     LCOMP_EXPR,
     TERM,
     FACTOR,
+	CEXPR,
     Z,
     TYPEDEF,
     VALUE,

@@ -34,7 +34,7 @@ map<string, ElementType> Lexer::keywords_ =
     { "else", ElementType::ELSE },
     { "less", ElementType::LESS },
     { "greater", ElementType::GREATER },
-    { "eq", ElementType::EQ },
+    { "equal", ElementType::EQ },
     { "neq", ElementType::NEQ },
     { "geq", ElementType::GEQ },
     { "leq", ElementType::LEQ },

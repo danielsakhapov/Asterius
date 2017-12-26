@@ -653,32 +653,32 @@ Parser::Parser(Lexer&& lexer)
         ElementType::LEXPR,
         std::vector<TransitionRule>({
             { 
-                { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
+                { ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
             },
             { 
-                { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY }
             },
             { 
-                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::INT_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::INT_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ElementType::INT_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::INT_CONST, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::DOUBLE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::DOUBLE_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ElementType::DOUBLE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::DOUBLE_CONST, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::BYTE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::BYTE_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ElementType::BYTE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::BYTE_CONST, ActionType::EMPTY, ActionType::EMPTY }
             },
             { 
-                { ElementType::NOT, ElementType::EXPR, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::AND_EXPR, ElementType::OR_EXPR }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+                { ElementType::NOT, ElementType::EXPR, ElementType::MULT_EXPR, ElementType::ADD_EXPR }, 
+                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT, ActionType::EMPTY }
             },
             { 
                 { ElementType::STRING_CONST },
@@ -686,45 +686,49 @@ Parser::Parser(Lexer&& lexer)
             } 
         })
     );
+	table_.emplace(
+		ElementType::CEXPR,
+		std::vector<TransitionRule>({
+			{
+				{ ElementType::NAME, ElementType::DESC, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::MINUS, ElementType::NEG, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::EMPTY, ActionType::EMPTY, ActionType::UMINUS, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::INT_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::INT_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::DOUBLE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::DOUBLE_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::BYTE_CONST, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::BYTE_CONST, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::NOT, ElementType::EXPR, ElementType::MULT_EXPR, ElementType::ADD_EXPR, ElementType::COMP_EXPR, ElementType::AND_EXPR },
+				{ ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY }
+			},
+			{
+				{ ElementType::STRING_CONST },
+				{ ActionType::STRING_CONST }
+			}
+		})
+	);
     table_.emplace(
         ElementType::OR_EXPR,
         std::vector<TransitionRule>({
             { 
-                { ElementType::OR, ElementType::OR_TERM, ElementType::OR_EXPR }, 
+                { ElementType::OR, ElementType::CEXPR, ElementType::OR_EXPR }, 
                 { ActionType::EMPTY, ActionType::EMPTY, ActionType::OR }
-            },
-            { 
-                { ElementType::EMPTY },
-                { ActionType::EMPTY }
-            } 
-        })
-    );
-    table_.emplace(
-        ElementType::OR_TERM,
-        std::vector<TransitionRule>({
-            { 
-                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::AND_EXPR }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
-            },
-            { 
-                { ElementType::NAME, ElementType::DESC, ElementType::AND_EXPR }, 
-                { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY } 
-            },
-            { 
-                { ElementType::NOT, ElementType::NEG, ElementType::AND_EXPR },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT }
-            },          
-            { 
-                { ElementType::INT_CONST, ElementType::AND_EXPR }, 
-                { ActionType::INT_CONST, ActionType::EMPTY } 
-            },
-            { 
-                { ElementType::DOUBLE_CONST, ElementType::AND_EXPR }, 
-                { ActionType::DOUBLE_CONST, ActionType::EMPTY } 
-            },
-            { 
-                { ElementType::BYTE_CONST, ElementType::AND_EXPR },
-                { ActionType::BYTE_CONST, ActionType::EMPTY }
             },
             { 
                 { ElementType::EMPTY },
@@ -738,7 +742,7 @@ Parser::Parser(Lexer&& lexer)
             { 
                 { ElementType::AND, ElementType::AND_FACTOR, ElementType::AND_EXPR }, 
                 { ActionType::EMPTY, ActionType::EMPTY, ActionType::AND }
-            },
+            },			
             { 
                 { ElementType::EMPTY },
                 { ActionType::EMPTY }
@@ -749,61 +753,28 @@ Parser::Parser(Lexer&& lexer)
         ElementType::AND_FACTOR,
         std::vector<TransitionRule>({
             { 
-                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::LCOMP_EXPR },
+                { ElementType::OPEN_BRACKET, ElementType::EXPR, ElementType::CLOSE_BRACKET, ElementType::COMP_EXPR },
                 { ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY } 
             },
             { 
-                { ElementType::NAME, ElementType::DESC, ElementType::LCOMP_EXPR }, 
+                { ElementType::NAME, ElementType::DESC, ElementType::COMP_EXPR }, 
                 { ActionType::NAME, ActionType::EMPTY, ActionType::EMPTY } 
             },
             { 
-                { ElementType::NOT, ElementType::AND_FACTOR, ElementType::LCOMP_EXPR }, 
+                { ElementType::NOT, ElementType::AND_FACTOR, ElementType::COMP_EXPR }, 
                 { ActionType::EMPTY, ActionType::EMPTY, ActionType::NOT }
             },
             { 
-                { ElementType::INT_CONST, ElementType::LCOMP_EXPR }, 
+                { ElementType::INT_CONST, ElementType::COMP_EXPR }, 
                 { ActionType::INT_CONST, ActionType::EMPTY} 
             },
             { 
-                { ElementType::DOUBLE_CONST, ElementType::LCOMP_EXPR },
+                { ElementType::DOUBLE_CONST, ElementType::COMP_EXPR },
                 { ActionType::DOUBLE_CONST, ActionType::EMPTY } 
             },
             { 
-                { ElementType::BYTE_CONST, ElementType::LCOMP_EXPR }, 
+                { ElementType::BYTE_CONST, ElementType::COMP_EXPR }, 
                 { ActionType::BYTE_CONST, ActionType::EMPTY } 
-            },
-            { 
-                { ElementType::EMPTY },
-                { ActionType::EMPTY }
-            } 
-        })
-    );
-    table_.emplace(
-        ElementType::LCOMP_EXPR,
-        std::vector<TransitionRule>({
-            { 
-                { ElementType::LESS, ElementType::LEXPR, ElementType::Z }, 
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::LESS } 
-            },
-            { 
-                { ElementType::GREATER, ElementType::LEXPR, ElementType::Z },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::GREATER }
-            },
-            { 
-                { ElementType::EQ, ElementType::LEXPR, ElementType::Z },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::EQ }
-            },
-            { 
-                { ElementType::NEQ, ElementType::LEXPR, ElementType::Z },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::NEQ }
-            },
-            { 
-                { ElementType::GEQ, ElementType::LEXPR, ElementType::Z },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::GEQ }
-            },
-            { 
-                { ElementType::LEQ, ElementType::LEXPR, ElementType::Z },
-                { ActionType::EMPTY, ActionType::EMPTY, ActionType::LEQ }
             },
             { 
                 { ElementType::EMPTY },
