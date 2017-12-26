@@ -91,6 +91,11 @@ void RPN::setCommand(size_t position) noexcept
     next_ = position;
 }
 
+size_t RPN::getCommand() const noexcept
+{
+    return next_;
+}
+
 void RPN::print() const
 {
 	int pos = 0;
@@ -561,6 +566,17 @@ void AssignCommand::execute(RPN& rpn)
         }
         break;
     }
+    case DataType::ARRAY: 
+    {
+        //shold work only for string arrays
+        //some safe checks
+        auto lPast = get_val<array_passport>(leftData);
+        auto rPass = get_val<array_passport>(rightData);
+        void* dest = (void*)((char*)leftData + 16); //hack
+        void* src = (void*)((char*)rightData + 16);
+        memcpy(dest, src, rPass.size_);
+        break;
+    }
     default:
 		throw std::logic_error("Wrong type!");
     }
@@ -597,7 +613,6 @@ void IndexCommand::execute(RPN& rpn)
 	int offset = variable.offset() + (int)passport.block_offset_ + (int)passport.element_size_ * index;
 	Variable result(passport.element_type_, passport.element_size_);
 	result.setOffset(offset);
-    //result.setRelative(false);
 	rpn.addOperand(result);
 }
 
@@ -621,6 +636,17 @@ EndBlockCommand::EndBlockCommand()
 void EndBlockCommand::execute(RPN& rpn)
 {
     rpn.endBlock();
+}
+
+SaveIPCommand::SaveIPCommand()
+    :Command("save ip")
+{
+}
+
+void SaveIPCommand::execute(RPN& rpn)
+{
+    auto ip = rpn.getCommand();
+    rpn.createOperand(make_variable<int>(), &ip);
 }
 
 template<class value_type>

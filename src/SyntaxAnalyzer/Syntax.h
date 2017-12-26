@@ -34,6 +34,7 @@ private:
     std::string name_; //holds variable name
 	std::vector<size_t> dims_; //holds array dimensions
 	ElementType element_type_; //hold array element type
+    std::vector<ElementType> arg_types_; //hold argument type for type check
 
     void transit(ElementType elementType, const Token& token);
 	void match(ElementType elementType, const Token& token) const;

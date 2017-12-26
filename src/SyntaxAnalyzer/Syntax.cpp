@@ -209,6 +209,7 @@ void Parser::generate(RPN& rpn, const Token& token)
     case asterius::ActionType::ZERO_CONST:
         break;
     case asterius::ActionType::PARAMS_END:
+        symbol_table_.pop();
         break;
     case asterius::ActionType::WHILE_BEGIN:
 	    labelsStack_.push(rpn.getSize() - 1);
@@ -218,11 +219,14 @@ void Parser::generate(RPN& rpn, const Token& token)
 		rpn.addCommand(std::make_unique<BeginBlockCommand>());
         break;
     case asterius::ActionType::PARAMS_BEGIN:
+        symbol_table_.push();
+        arg_types_.clear();
         break;
     case asterius::ActionType::DOUBLE_CONST:
 		rpn.addCommand(std::make_unique<DataCommand<double> >(make_variable<double>(), std::stod(token.getName())));
         break;
     case asterius::ActionType::STRING_CONST:
+        rpn.addCommand(std::make_unique<DataCommand<std::string> >(token.getName()));
         break;
     case asterius::ActionType::FUNCTION_CALL:
         break;
@@ -248,7 +252,7 @@ void Parser::generate(RPN& rpn, const Token& token)
         break;
     case asterius::ActionType::ASS_STRING_CONST:
         rpn.addCommand(std::make_unique<OperandCommand>(symbol_table_.find(name_), name_));
-        //rpn.addCommand(std::make_unique<DataCommand<std::string> >(make_variable<std::string>(), token.getName()));
+        rpn.addCommand(std::make_unique<DataCommand<std::string> >(token.getName()));
         rpn.addCommand(std::make_unique<AssignCommand>());
         break;
     case asterius::ActionType::ASS_DOUBLE_CONST:
@@ -318,7 +322,7 @@ Parser::Parser(Lexer&& lexer)
         std::vector<TransitionRule>({
             { 
                 { ElementType::NAME, ElementType::OPEN_BRACKET, ElementType::ARGS, ElementType::CLOSE_BRACKET, ElementType::BLOCK, ElementType::FUNC }, 
-                { ActionType::NAME, ActionType::PARAMS_BEGIN, ActionType::EMPTY, ActionType::PARAMS_END, ActionType::EMPTY, ActionType::EMPTY } 
+                { ActionType::NAME, ActionType::PARAMS_BEGIN, ActionType::EMPTY, ActionType::EMPTY, ActionType::EMPTY, ActionType::PARAMS_END }
             },
             { 
                 { ElementType::MAIN, ElementType::OPEN_BRACKET, ElementType::ARGS, ElementType::CLOSE_BRACKET, ElementType::BLOCK },

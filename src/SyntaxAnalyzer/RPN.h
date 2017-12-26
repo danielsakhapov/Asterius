@@ -31,6 +31,7 @@ public:
 	void createVariable(const Variable& variable, void* src); //allocates variable on stack and set memory
 	std::pair<Variable, void*> getNextOperand();
 	void setCommand(size_t position) noexcept;
+    size_t getCommand() const noexcept;
 	void print() const;
 	size_t getSize();
 	void execute();
@@ -112,7 +113,7 @@ public:
 		_execute(rpn, 0);
 	}
 private:
-	size_t _execute(RPN& rpn, size_t level)
+	void _execute(RPN& rpn, size_t level)
 	{
 		if (level == dims_.size() - 1) { // final dimension
 			for (size_t i = 0; i < dims_[level]; ++i) {
@@ -124,11 +125,10 @@ private:
 			for (int i = 0, offset = ARRAY_SIZE * dims_[level]; i < (int)dims_[level]; offset += sizes_[level] - ARRAY_SIZE, ++i) {
 				create_variable(rpn, offset, dims_[level + 1], level == dims_.size() - 2);
 			}
-			for (size_t i = 0; i < (int)dims_[level]; ++i) {
+			for (size_t i = 0; i < dims_[level]; ++i) {
 				_execute(rpn, level + 1);
 			}
 		}
-		return 1;
 	}
 
 	void precalc()
@@ -305,6 +305,34 @@ private:
 	Variable variable_;
 };
 
+template<>
+class DataCommand<std::string> : public Command
+{
+public:
+    DataCommand(const std::string& data)
+        : Command("create constant " + data),
+        data_(data)
+    {
+    }
+
+    void execute(RPN& rpn) override
+    {
+        size_t size = ARRAY_SIZE + data_.size();
+        auto buf = std::make_unique<char[]>(size);
+        array_passport passport;
+        passport.block_offset_ = ARRAY_SIZE;
+        passport.element_size_ = 1;
+        passport.element_type_ = DataType::BYTE;
+        passport.size_ = data_.size();
+        memcpy(buf.get(), &passport, ARRAY_SIZE); //101 don't look here
+        memcpy(buf.get() + ARRAY_SIZE, data_.data(), size - ARRAY_SIZE); //Lasciate ogni speranza, voi ch’entrate
+        Variable var(DataType::ARRAY, size);
+        rpn.createOperand(var, buf.get());
+    };
+private:
+    std::string data_;
+};
+
 class BeginBlockCommand : public Command
 {
 public:
@@ -317,6 +345,16 @@ class EndBlockCommand : public Command
 public:
 	EndBlockCommand();
 	void execute(RPN& rpn) override;
+};
+
+class SaveIPCommand : public Command {
+public:
+    SaveIPCommand();
+    void execute(RPN& rpn);
+};
+
+class ArgumentCommand : public Command {
+
 };
 
 //HELPER FUNCTIONS
